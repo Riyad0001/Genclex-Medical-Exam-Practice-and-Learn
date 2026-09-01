@@ -28,9 +28,6 @@ staticfiles/
 templates/admin/icon.png
 
 # Environment Variables
-.env
-.env.local
-.env.*
 !.env.example
 
 # Sockets and runtime lock files
@@ -60,7 +57,6 @@ Thumbs.db
 
 # IDE and Editor configs
 .idea/
-.vscode/
 *.swp
 *.swo
 *~
@@ -72,3 +68,9 @@ Thumbs.db
 htmlcov/
 .pytest_cache/
 .mypy_cache/
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore
+config.bat
+node_modules
