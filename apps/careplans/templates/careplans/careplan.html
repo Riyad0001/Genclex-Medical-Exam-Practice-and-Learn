@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Care Plan Builder</title>
+<style>
+:root{--ink:#1e293b;--sub:#64748b;--line:#e2e8f0;--blue:#2b5788;--blue2:#3a6da3;--bg:#f8fafc;--red:#dc2626;--green:#16a34a}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:14px}
+.app{display:grid;grid-template-columns:280px 1fr;gap:20px;padding:24px;max-width:1200px;margin:auto}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px}
+.side{padding:16px}
+.side h3{font-size:13px;color:var(--sub);text-transform:none;margin-bottom:12px}
+.f{margin-bottom:12px}
+.f label{display:block;font-size:12px;font-weight:600;margin-bottom:4px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+input,select,textarea{width:100%;border:1px solid var(--line);border-radius:6px;padding:7px 9px;font-size:13px;color:var(--ink);font-family:inherit}
+textarea{resize:vertical;min-height:36px}
+::placeholder{color:#9aa5b1}
+.gen{width:100%;background:var(--blue);color:#fff;border:0;border-radius:8px;padding:11px;font-size:14px;font-weight:600;cursor:pointer;margin-top:4px}
+.gen:hover{background:var(--blue2)}
+.main-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.main-head h2{font-size:20px}
+.pill-btn{background:#eef2f7;border:1px solid var(--line);border-radius:6px;padding:6px 12px;font-size:12px;color:var(--ink);cursor:pointer;margin-left:8px}
+.hero{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;border-radius:10px;padding:20px 22px;position:relative}
+.hero .eyebrow{font-size:11px;letter-spacing:.06em;opacity:.85;text-transform:uppercase}
+.hero h1{font-size:22px;font-weight:700;margin:6px 0 10px}
+.badge{display:inline-block;background:rgba(255,255,255,.18);border-radius:20px;padding:4px 12px;font-size:12px;margin-right:8px}
+.hero .reset{position:absolute;top:18px;right:20px;font-size:12px;opacity:.9;cursor:pointer}
+.tabs{display:flex;border-bottom:1px solid var(--line);margin-top:16px;overflow-x:auto}
+.tab{padding:10px 16px;font-size:13px;color:var(--sub);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+.tab.active{color:var(--blue);border-color:var(--blue);font-weight:600}
+.panel{display:none;background:#fff;border:1px solid var(--line);border-top:0;border-radius:0 0 10px 10px;padding:20px}
+.panel.active{display:block}
+h4.sec{font-size:14px;margin:18px 0 8px;display:flex;align-items:center;gap:6px}
+h4.sec:first-child{margin-top:0}
+p.txt{font-size:13px;line-height:1.6;color:#334155;margin-bottom:6px}
+.dx-summary{border:1px solid var(--line);border-radius:8px;padding:12px;display:flex;gap:10px;align-items:flex-start;background:#fafbfc}
+.rank{color:var(--red);font-weight:700;font-size:13px;min-width:18px}
+.dx-summary strong{font-size:13px}
+.dx-summary span{display:block;font-size:12px;color:var(--sub);margin-top:2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+ol.plain,ul.plain{list-style:none}
+ol.plain li,ul.plain li{font-size:13px;margin-bottom:10px;line-height:1.5}
+ol.plain li b{color:var(--blue);margin-right:6px}
+table{width:100%;border-collapse:collapse;margin-bottom:10px}
+th{background:#eef4fb;text-align:left;font-size:12px;padding:9px 10px;color:#334155}
+td{font-size:13px;padding:9px 10px;border-top:1px solid var(--line);vertical-align:top}
+.link{color:var(--blue2)}
+.dx-card{border:1px solid var(--line);border-radius:8px;padding:16px;margin-bottom:16px}
+.dx-title{display:flex;gap:8px;align-items:center;font-size:15px;font-weight:700;margin-bottom:2px}
+.dx-title .rank{font-size:15px}
+.dx-title small{display:block;font-weight:400;font-size:12px;color:var(--sub);margin-top:2px}
+.lbl{font-size:11px;letter-spacing:.05em;color:var(--sub);text-transform:uppercase;margin:14px 0 6px;font-weight:700}
+.goal{display:flex;gap:8px;align-items:flex-start;font-size:13px;margin-bottom:10px}
+.chk{color:var(--green);font-weight:700}
+.goal small{display:block;color:var(--sub);font-size:12px;margin-top:2px}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.chip{background:#eef4fb;color:var(--blue);border-radius:6px;padding:6px 10px;font-size:12px}
+.chip.pink{background:#fdf0f4;color:#be185d}
+.eval{font-size:13px;margin-bottom:6px;display:flex;gap:6px}
+.badge-red{background:#fee2e2;color:var(--red);font-weight:700;border-radius:20px;padding:2px 9px;font-size:12px}
+.num-circle{background:var(--blue);color:#fff;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+.edu-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.edu-item{display:flex;gap:10px}
+.edu-item p{font-size:13px;line-height:1.4}
+.outcomes{list-style:none}
+.outcomes li{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px 14px;font-size:13px;margin-bottom:8px;display:flex;gap:8px}
+</style>
+</head>
+<body>
+<div class="app">
+
+<aside class="card side">
+<h3>Patient Information</h3>
+<div class="row2">
+<div class="f"><label>Age</label><input name="age" placeholder="e.g. 68"></div>
+<div class="f"><label for="gender">Gender</label><select id="gender" name="gender" required><option value="" disabled selected>Select...</option><option value="Male">Male</option><option value="Female">Female</option></select></div>
+</div>
+<div class="f"><label>Care Setting</label><input name="care_setting" placeholder="Structured (Background/Methods/Result..."></div>
+<div class="f"><label>Chief Complaint / Reason for Admission *</label>
+<textarea name="chief_complaint" placeholder="e.g. 68yo male admitted with chest pain, SOB, and diaphoresis. HR 112, BP 88/54, SpO2 91% on RA...">68yo male admitted with chest pain, SOB, and diaphoresis. HR 112, BP 88/54, SpO2 91% on RA...</textarea></div>
+<div class="row2">
+<div class="f"><label>Past Medical History</label><input name="past_medical_history" value="HTN, DM2, CKD..."></div>
+<div class="f"><label>Current Medications</label><input name="current_medications" value="Metformin, Lisinop..."></div>
+</div>
+<div class="row2">
+<div class="f"><label>Allergies</label><input name="allergies" placeholder="NKDA or list..."></div>
+<div class="f"><label>Key Vitals</label><input name="key_vitals" placeholder="BP, HR, SpO2, Te..."></div>
+</div>
+<div class="f"><label>Relevant Labs / Diagnostics</label><input name="relevant_labs" value="Na 128, K 5.8, Glucose 485, WBC 18..."></div>
+<div class="f"><label>Additional Clinical Notes</label><textarea name="additional_clinical_notes">IV access, fall risk, isolation precautions,...</textarea></div>
+<button class="gen">⚡ Generate</button>
+</aside>
+
+<main>
+<div class="main-head">
+<h2>Care Plan Builder</h2>
+<div><button class="pill-btn">History (3)</button><button class="pill-btn">↻ Reset</button></div>
+</div>
+
+<div class="hero">
+<span class="reset">↻ Reset</span>
+<div class="eyebrow">Stem RN Care Plan</div>
+<h1>Male — Chief Complaint / Reason for Admission</h1>
+<span class="badge">2 Nursing Diagnoses</span><span class="badge">Generated Jul 14, 9:52 AM</span>
+</div>
+
+<div class="tabs" id="tabs">
+<div class="tab active" data-t="overview">Overview</div>
+<div class="tab" data-t="assessment">Assessment</div>
+<div class="tab" data-t="diagnoses">Diagnoses</div>
+<div class="tab" data-t="medications">Medications</div>
+<div class="tab" data-t="lab">Lab Findings</div>
+<div class="tab" data-t="edu">Patient Education</div>
+<div class="tab" data-t="outcomes">Expected Outcomes</div>
+</div>
+
+<section class="panel active" id="p-overview">
+<h4 class="sec">👤 Patient Overview</h4>
+<p class="txt">Patient admitted with sdfsdf. PMH: not provided. Current medications: per reconciliation. Allergies: sfdsd. Vital signs presentation: sdfsdf. Relevant diagnostics: sdfsdf. Additional clinical context: asdfsd.</p>
+<h4 class="sec">🩺 Disease Overview</h4>
+<p class="txt">This patient presentation involves acute illness requiring inpatient nursing management. Care priorities are established using Maslow's Hierarchy and ABC framework. Physiological stability is addressed before psychosocial needs. All interventions are evidence-based and aligned with current clinical practice guidelines and NANDA-I taxonomy.</p>
+<h4 class="sec">🚩 Priority Nursing Diagnoses Summary</h4>
+<div class="dx-summary"><span class="rank">#1</span><div><strong>Deficient Knowledge</strong><span>r/t new or complex diagnosis, unfamiliarity with treatment regimen, health literacy ...</span></div></div>
+</section>
+
+<section class="panel" id="p-assessment">
+<div class="grid2">
+<div>
+<h4 class="sec">💬 Subjective Data (Patient Reports)</h4>
+<ol class="plain">
+<li><b>S1.</b>"sdfsdf"</li>
+<li><b>S2.</b>Past medical history per patient report</li>
+<li><b>S3.</b>Home medications per patient/family report</li>
+<li><b>S4.</b>Allergies: sdfsd</li>
+<li><b>S5.</b>Patient rates discomfort and expresses concerns regarding current illness</li>
+</ol>
+</div>
+<div>
+<h4 class="sec">📊 Objective Data (Nurse Observed)</h4>
+<ol class="plain">
+<li><b>O1.</b>Vitals on admission: sdfsdf</li>
+<li><b>O2.</b>Lab values noted: sdfsdf</li>
+<li><b>O3.</b>Clinical notes: asdfsd</li>
+<li><b>O4.</b>Physical assessment performed head-to-toe — findings documented per system</li>
+<li><b>O5.</b>IV access established; monitoring in place per orders</li>
+</ol>
+</div>
+</div>
+</section>
+
+<section class="panel" id="p-diagnoses">
+<div class="dx-card">
+<div class="dx-title"><span class="rank">🚩</span>Deficient Knowledge<small>r/t new or complex diagnosis, unfamiliarity with treatment regimen, health literacy barriers, or limited prior healthcare experience</small></div>
+<div class="lbl">Related To</div>
+<p class="txt">new or complex diagnosis, unfamiliarity with treatment regimen, health literacy barriers, or limited prior healthcare experience</p>
+<div class="lbl">As Evidenced By</div>
+<ul class="plain">
+<li>Patient verbalizes lack of understanding of diagnosis and/or medications</li>
+<li>Questions about disease process and self-care</li>
+<li>Incorrect return demonstration of required skills</li>
+<li>Non-adherent behaviors prior to admission</li>
+</ul>
+<div class="lbl">Smart Goals</div>
+<div class="goal"><span class="chk">✓</span><div>Patient will accurately verbalize understanding of diagnosis, prescribed medications (purpose, dose, side effects), and follow-up care using teach-back method<small>⏱ Before discharge</small></div></div>
+<div class="goal"><span class="chk">✓</span><div>Patient will demonstrate required self-care skills (SMBG, wound care, medication administration, etc.) independently with ≥90% accuracy<small>⏱ Before discharge</small></div></div>
+<div class="goal"><span class="chk">✓</span><div>Patient will identify at least three warning signs/symptoms requiring immediate medical attention and describe appropriate response<small>⏱ Before discharge</small></div></div>
+<div class="lbl">Nursing Interventions &amp; Scientific Rationales</div>
+<table>
+<tr><th style="width:45%">Intervention</th><th>Scientific Rationale</th></tr>
+<tr><td>Assess patient's baseline knowledge, health literacy (How do you prefer to get health information?), preferred language, sensory limitations, and identified barriers to learning (anxiety, pain, cultural factors); document readiness to learn</td><td>Learning assessment identifies individualized barriers that must be addressed before education begins. Adequate pain control and anxiety reduction are prerequisites for effective learning. Cultural competence improves engagement and retention</td></tr>
+<tr><td>Use teach-back method for all education: provide information in small chunks, then ask "In your own words what did you do when..." to document patient understanding verba...</td><td>Teach-back returns demonstration of understanding is the gold-standard method for confirming health literacy. Studies show up to 90% of patients don't understand discharge instructions when standard approaches are used; teach-back reduces 30-day readmissions</td></tr>
+<tr><td>Provide written educational materials at 4-6th grade reading level in patient's preferred language; use visual aids, videos, or models as appropriate; avoid medical jargon</td><td>Nearly 50% of US adults have limited health literacy. Low health literacy is associated with increased hospitalization, poor medication adherence, and worse outcomes. Plain-language supporting materials improve retention by 60%</td></tr>
+<tr><td>Involve family members or identified caregivers in education sessions (with patient consent); provide time for written materials; address caregiver-specific concerns and responsibilities</td><td>Family/caregiver involvement is critical for post-discharge adherence, especially for complex regimens. Support systems reduce caregiver burden and prevent rehospitalization related to missed care</td></tr>
+<tr><td>Begin discharge planning on day 1 in collaboration with interdisciplinary team (case management, social work, pharmacy, PT/OT, wound care); document referrals for safe discharge and follow-up appointments</td><td>Early discharge planning identifies and resolves barriers proactively. Multidisciplinary discharge planning reduces 30-day readmission rates by 25% (JCAHO, CMS). Late referrals are the leading cause of avoidable prolonged hospitalizations</td></tr>
+</table>
+<div class="lbl">Evaluation Criteria</div>
+<div class="eval">✅ Patient demonstrates understanding of diagnosis and treatment via teach-back with ≥ 90% accuracy</div>
+<div class="eval">✅ Patient correctly performs required self-care skills before discharge</div>
+<div class="eval">✅ Patient and family verbalize three warning signs requiring emergency care</div>
+<div class="eval">✅ Written education materials provided in preferred language; patient able to teach-back</div>
+<div class="eval">✅ Discharge plan completed with all appropriate referrals and follow-up appointments scheduled</div>
+<div class="lbl">NCLEX Pearls</div>
+<div class="chip-row">
+<span class="chip">Teach-back = gold standard patient education method</span>
+<span class="chip">Assess READINESS before teaching (anxiety first)</span>
+<span class="chip pink">Health literacy affects ~50% of US adults</span>
+<span class="chip pink">Discharge planning begins on admission day 1</span>
+</div>
+</div>
+</section>
+
+<section class="panel" id="p-medications">
+<h4 class="sec">💊 Common Medications for This Patient</h4>
+<table>
+<tr><th>Medication</th><th>Dose</th><th>Route</th><th>Nursing Purpose</th></tr>
+<tr><td>Medication reconciliation in progress</td><td>Per provider order</td><td>—</td><td class="link">Verify all home medications and new orders</td></tr>
+<tr><td>PRN analgesic per order</td><td>Per order set</td><td>PO/IV</td><td class="link">Pain management as needed</td></tr>
+</table>
+</section>
+
+<section class="panel" id="p-lab">
+<h4 class="sec">🧪 Laboratory Findings &amp; Clinical Significance</h4>
+<table>
+<tr><th>Lab Value</th><th>Patient Value</th><th>Normal Range</th><th>Clinical Significance</th></tr>
+<tr><td>CBC (Complete Blood Count)</td><td style="color:var(--red)">Pending / per chart</td><td>WBC 4.5-11.0 × 10⁹/µL; Hgb 12-17 g/dL</td><td>Assess for infection (WBC), anemia (Hgb), and platelet adequacy</td></tr>
+<tr><td>BMP (Basic Metabolic Panel)</td><td style="color:var(--red)">Pending / per chart</td><td>Na 135-145; K 3.5-5.0; BUN 7-25; Cr 0.6-1.2</td><td>Renal function, fluid status, electrolyte balance</td></tr>
+</table>
+</section>
+
+<section class="panel" id="p-edu">
+<h4 class="sec">📘 Patient Education Plan</h4>
+<div class="edu-grid">
+<div class="edu-item"><span class="num-circle">1</span><p>Disease process: explanation of diagnosis in plain language at appropriate literacy level</p></div>
+<div class="edu-item"><span class="num-circle">2</span><p>All prescribed medications: purpose, how to take, side effects, missed dose instructions</p></div>
+<div class="edu-item"><span class="num-circle">3</span><p>Activity restrictions and progression: when to resume normal activities, signs of overexertion</p></div>
+<div class="edu-item"><span class="num-circle">4</span><p>Dietary modifications relevant to diagnosis (sodium restriction, carbohydrate consistency, fluid limits as applicable)</p></div>
+<div class="edu-item"><span class="num-circle">5</span><p>Follow-up appointments: primary care provider within 7-14 days; specialist referrals as ordered</p></div>
+<div class="edu-item"><span class="num-circle">6</span><p>Warning signs requiring IMMEDIATE emergency department visit or 911 call</p></div>
+<div class="edu-item"><span class="num-circle">7</span><p>Community resources: home health, disease-specific support groups, pharmacy consultation</p></div>
+<div class="edu-item"><span class="num-circle">8</span><p>Medication adherence strategies: pill organizer, pharmacy blister packs, medication reminder apps</p></div>
+</div>
+</section>
+
+<section class="panel" id="p-outcomes">
+<h4 class="sec">🎯 Expected Patient Outcomes</h4>
+<ul class="outcomes">
+<li>✅ Patient maintains hemodynamic stability throughout hospitalization</li>
+<li>✅ Pain controlled at ≤ 3/10 with multimodal analgesia strategy</li>
+<li>✅ No falls or hospital-acquired injuries during admission</li>
+<li>✅ No healthcare-associated infections (HAIs) during hospitalization</li>
+<li>✅ Electrolytes and fluid status within therapeutic parameters at discharge</li>
+<li>✅ Patient demonstrates understanding of diagnosis and discharge plan via teach-back</li>
+<li>✅ Patient scheduled for appropriate follow-up with all referrals completed</li>
+<li>✅ 30-day readmission risk addressed through discharge planning interventions</li>
+</ul>
+</section>
+
+</main>
+</div>
+
+<script>
+const tabs=document.getElementById("tabs");
+const generateButton=document.querySelector(".gen");
+const resetButtons=document.querySelectorAll(".pill-btn:last-child,.hero .reset");
+const statusLine=document.createElement("div");
+statusLine.style.cssText="font-size:12px;margin-top:9px;color:#64748b;min-height:18px";
+generateButton.insertAdjacentElement("afterend",statusLine);
+
+function esc(value){return String(value==null?"":value).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function list(items){return '<ul class="plain">'+(items||[]).map(function(x){return"<li>"+esc(x)+"</li>"}).join("")+"</ul>"}
+function table(items,columns){return "<table><tr>"+columns.map(function(c){return"<th>"+esc(c[1])+"</th>"}).join("")+"</tr>"+(items||[]).map(function(row){return"<tr>"+columns.map(function(c){return"<td>"+esc(row[c[0]])+"</td>"}).join("")+"</tr>"}).join("")+"</table>"}
+
+tabs.addEventListener("click",function(event){
+ const tab=event.target.closest(".tab");if(!tab)return;
+ document.querySelectorAll(".tab").forEach(function(x){x.classList.remove("active")});
+ document.querySelectorAll(".panel").forEach(function(x){x.classList.remove("active")});
+ tab.classList.add("active");document.getElementById("p-"+tab.dataset.t).classList.add("active");
+});
+
+function render(plan){
+ const meta=plan.metadata||{},overview=plan.overview||{},assessment=plan.assessment||{};
+ document.querySelector(".hero .eyebrow").textContent=meta.title||"STEM RN CARE PLAN";
+ document.querySelector(".hero h1").textContent=meta.subtitle||"Generated Care Plan";
+ const badges=document.querySelectorAll(".hero .badge");
+ badges[0].textContent=String(meta.nursing_diagnoses_count||(plan.diagnoses||[]).length)+" Nursing Diagnoses";
+ badges[1].textContent="Generated "+new Date(meta.generated_at||Date.now()).toLocaleString();
+
+ document.getElementById("p-overview").innerHTML='<h4 class="sec">👤 Patient Overview</h4><p class="txt">'+esc(overview.patient_overview)+'</p><h4 class="sec">🩺 Disease Overview</h4><p class="txt">'+esc(overview.disease_overview)+'</p><h4 class="sec">🚩 Priority Nursing Diagnoses Summary</h4>'+(overview.priority_nursing_diagnoses_summary||[]).map(function(x){return'<div class="dx-summary"><span class="rank">#'+esc(x.rank)+'</span><div><strong>'+esc(x.title)+'</strong><span>'+esc(x.subtitle)+"</span></div></div>"}).join("");
+
+ document.getElementById("p-assessment").innerHTML='<div class="grid2"><div><h4 class="sec">💬 Subjective Data (Patient Reports)</h4>'+list(assessment.subjective_data)+'</div><div><h4 class="sec">📊 Objective Data (Nurse Observed)</h4>'+list(assessment.objective_data)+"</div></div>";
+
+ document.getElementById("p-diagnoses").innerHTML=(plan.diagnoses||[]).map(function(d,i){return'<div class="dx-card"><div class="dx-title"><span class="rank">#'+(i+1)+'</span>'+esc(d.diagnosis)+"<small>"+esc(d.related_to)+'</small></div><div class="lbl">Related To</div><p class="txt">'+esc(d.related_to)+'</p><div class="lbl">As Evidenced By</div>'+list(d.as_evidenced_by)+'<div class="lbl">Smart Goals</div>'+(d.smart_goals||[]).map(function(g){return'<div class="goal"><span class="chk">✓</span><div>'+esc(g.goal)+"<small>⏱ "+esc(g.timeframe)+"</small></div></div>"}).join("")+'<div class="lbl">Nursing Interventions &amp; Scientific Rationales</div>'+table(d.nursing_interventions,[["intervention","Intervention"],["scientific_rationale","Scientific Rationale"]])+'<div class="lbl">Evaluation Criteria</div>'+(d.evaluation_criteria||[]).map(function(x){return'<div class="eval">✅ '+esc(x)+"</div>"}).join("")+'<div class="lbl">NCLEX Pearls</div><div class="chip-row">'+(d.nclex_pearls||[]).map(function(x){return'<span class="chip">'+esc(x)+"</span>"}).join("")+"</div></div></div>"}).join("");
+
+ document.getElementById("p-medications").innerHTML='<h4 class="sec">💊 Common Medications for This Patient</h4>'+table(plan.medications,[["medication","Medication"],["dose","Dose"],["route","Route"],["nursing_purpose","Nursing Purpose"]]);
+ document.getElementById("p-lab").innerHTML='<h4 class="sec">🧪 Laboratory Findings &amp; Clinical Significance</h4>'+table(plan.lab_findings,[["lab_value","Lab Value"],["patient_value","Patient Value"],["normal_range","Normal Range"],["clinical_significance","Clinical Significance"]]);
+ document.getElementById("p-edu").innerHTML='<h4 class="sec">📘 Patient Education Plan</h4><div class="edu-grid">'+(plan.patient_education||[]).map(function(x,i){return'<div class="edu-item"><span class="num-circle">'+esc(x.number||i+1)+'</span><p>'+esc(x.topic)+"</p></div>"}).join("")+"</div>";
+ document.getElementById("p-outcomes").innerHTML='<h4 class="sec">🎯 Expected Patient Outcomes</h4><ul class="outcomes">'+(plan.expected_outcomes||[]).map(function(x){return"<li>✅ "+esc(x)+"</li>"}).join("")+"</ul>";
+}
+
+generateButton.addEventListener("click",async function(){
+ const patient={};
+ document.querySelectorAll(".side [name]").forEach(function(field){if(field.value.trim())patient[field.name]=field.value.trim()});
+ if(!patient.gender){statusLine.style.color="#dc2626";statusLine.textContent="Please select Male or Female.";return}
+ if(!patient.chief_complaint){statusLine.style.color="#dc2626";statusLine.textContent="Chief complaint is required.";return}
+ generateButton.disabled=true;generateButton.textContent="Generating...";statusLine.style.color="#64748b";statusLine.textContent="The AI is building the care plan.";
+ try{
+  const response=await fetch("/api/v1/care-plans",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({patient:patient})});
+  const body=await response.json();if(!response.ok)throw new Error(body.detail||"Generation failed");
+  render(body.data.care_plan);statusLine.style.color="#16a34a";statusLine.textContent="Care plan generated successfully.";
+  document.querySelector('.tab[data-t="overview"]').click();
+ }catch(error){statusLine.style.color="#dc2626";statusLine.textContent=error.message}
+ finally{generateButton.disabled=false;generateButton.textContent="⚡ Generate"}
+});
+resetButtons.forEach(function(button){button.addEventListener("click",function(){location.reload()})});
+</script>
+</body>
+</html>
+

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unstable Angina - Study Cards</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #14213d;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background-color: #f0f0f0;
+            color: #14213d;
+            padding: 20px;
+            text-align: left;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .header p {
+            margin: 5px 0 0;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .study-cards {
+            max-width: 700px;
+            margin: 40px auto;
+            background-color: #1d2951;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .study-cards h2 {
+            color: #ff5c5c;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card-section {
+            display: flex;
+            justify-content: space-between;
+            background-color: #ffffff10;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .card-section h3 {
+            margin-top: 0;
+        }
+
+        .normal-values {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .normal-values input {
+            width: 100px;
+            padding: 5px;
+            border-radius: 5px;
+            border: none;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .hyponatremia {
+            background-color: #3a6fa0;
+            padding: 10px;
+            border-radius: 5px;
+            flex: 1;
+        }
+
+        .hypernatremia {
+            background-color: #ff7f7f;
+            padding: 10px;
+            border-radius: 5px;
+            flex: 1;
+        }
+
+        .management {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .management span {
+            color: #ffe600;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>UNSTABLE-ANGINA</h1>
+        <p>Unstable Angina (UA) = chest pain at <strong>REST</strong> or with minimal exertion, unpredictable in pattern. Part of Acute Coronary Syndrome (ACS).</p>
+    </div>
+
+    <div class="study-cards">
+        <h2>STEMRN • NCLEX REVIEW <br> Study Cards</h2>
+
+        <div class="card">
+            <div class="card-section">
+                <div class="normal-values">
+                    <input type="text" value="Na⁺ 135–145 mEq/L" readonly>
+                    <input type="text" value="K⁺ 3.5–5.0 mEq/L" readonly>
+                    <input type="text" value="Ca²⁺ 8.5–10.5 mg/dL" readonly>
+                </div>
+            </div>
+
+            <div class="card-section hyponatremia">
+                <h3>SODIUM (Na⁺) - Hyponatremia &lt;135</h3>
+                <ul>
+                    <li>Nausea, confusion</li>
+                    <li>Seizure risk ⚠️</li>
+                    <li>SIADH → Fluid restriction</li>
+                </ul>
+                <div class="management">
+                    MANAGEMENT → Hypertonic saline (severe)
+                </div>
+            </div>
+
+            <div class="card-section hypernatremia">
+                <h3>SODIUM (Na⁺) - Hypernatremia &gt;145</h3>
+                <ul>
+                    <li>Thirst, dehydration</li>
+                    <li>Neuro changes</li>
+                </ul>
+                <div class="management">
+                    MANAGEMENT → Give fluids slowly (prevent cerebral edema)
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

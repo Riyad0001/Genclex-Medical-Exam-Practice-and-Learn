@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedTutor AI - Real-time MBBS, Nursing & NCLEX Tutor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-family: 'Outfit', sans-serif;
+      --bg-gradient: radial-gradient(circle at top right, #1e1b4b, #0f172a 60%);
+      --primary-color: #10b981;
+      --primary-hover: #059669;
+      --accent-color: #06b6d4;
+      --bg-card: rgba(30, 41, 59, 0.5);
+      --border-color: rgba(148, 163, 184, 0.15);
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --danger-color: #f43f5e;
+      --success-color: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-family);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+      padding: 2rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      min-height: 90vh;
+    }
+
+    /* Glassmorphism containers */
+    .glass-panel {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: 1.25rem;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass-panel:hover {
+      border-color: rgba(16, 185, 129, 0.3);
+      box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+    }
+
+    /* Title & Header */
+    .app-header {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .app-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #10b981, #06b6d4);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.025em;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .app-subtitle {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      font-weight: 400;
+      max-width: 600px;
+    }
+
+    /* Main Dashboard Layout */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 1.5rem;
+      flex-grow: 1;
+    }
+
+    @media (max-width: 900px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Chat Module */
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      height: 650px;
+      overflow: hidden;
+    }
+
+    .chat-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chat-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .status-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--text-muted);
+    }
+
+    .status-indicator.connected {
+      background-color: var(--success-color);
+      box-shadow: 0 0 8px var(--success-color);
+    }
+
+    .status-indicator.connecting {
+      background-color: #f59e0b;
+      animation: pulse 1.5s infinite;
+    }
+
+    /* Chat messages list */
+    .messages-list {
+      flex-grow: 1;
+      padding: 1.5rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+    }
+
+    .messages-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .messages-list::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+
+    .history-banner {
+      margin: 0 1.5rem 1rem;
+      padding: 0.75rem 1rem;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 0.85rem;
+      background: rgba(15, 23, 42, 0.45);
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    /* Message Bubbles */
+    .message-wrapper {
+      display: flex;
+      flex-direction: column;
+      max-width: 80%;
+      animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .message-wrapper.user {
+      align-self: flex-end;
+    }
+
+    .message-wrapper.assistant {
+      align-self: flex-start;
+    }
+
+    .message-sender {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.25rem;
+      padding: 0 0.5rem;
+    }
+
+    .user .message-sender {
+      color: var(--accent-color);
+      align-self: flex-end;
+    }
+
+    .assistant .message-sender {
+      color: var(--primary-color);
+      align-self: flex-start;
+    }
+
+    .message-bubble {
+      padding: 1rem 1.25rem;
+      border-radius: 1.25rem;
+      font-size: 0.975rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    .user .message-bubble {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.25), rgba(6, 182, 212, 0.1));
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      border-bottom-right-radius: 0.25rem;
+      color: var(--text-primary);
+    }
+
+    .assistant .message-bubble {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05));
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-top-left-radius: 0.25rem;
+      color: #f1f5f9;
+    }
+
+    /* Chat Input Bar */
+    .chat-input-container {
+      padding: 1.25rem 1.5rem;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .file-preview-strip {
+      display: none;
+      align-items: center;
+      gap: 0.75rem;
+      background: rgba(15, 23, 42, 0.4);
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.75rem;
+      border: 1px dashed var(--border-color);
+      font-size: 0.85rem;
+    }
+
+    .file-preview-name {
+      flex-grow: 1;
+      color: var(--text-primary);
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .remove-file-btn {
+      background: none;
+      border: none;
+      color: var(--danger-color);
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.2s;
+    }
+
+    .remove-file-btn:hover {
+      opacity: 0.8;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .text-input {
+      flex-grow: 1;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: 0.85rem;
+      padding: 0.85rem 1.25rem;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .text-input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+    }
+
+    .text-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    /* Buttons */
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      border-radius: 0.85rem;
+      width: 46px;
+      height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--text-secondary);
+    }
+
+    .send-btn {
+      background: var(--primary-color);
+      border: none;
+      color: white;
+      border-radius: 0.85rem;
+      padding: 0 1.5rem;
+      height: 46px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    .send-btn:hover {
+      background: var(--primary-hover);
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+    }
+
+    .send-btn:disabled {
+      background: var(--text-muted);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* Sidebar voice + info panel */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .widget {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .widget-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5rem;
+    }
+
+    /* Voice Call UI */
+    .voice-status-box {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--border-color);
+      border-radius: 0.85rem;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .voice-status-text {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .voice-status-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--text-muted);
+    }
+
+    .voice-status-indicator.active {
+      background: var(--danger-color);
+      box-shadow: 0 0 10px var(--danger-color);
+      animation: pulse 1s infinite alternate;
+    }
+
+    .voice-btn {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border-radius: 0.85rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.25s ease;
+      border: none;
+    }
+
+    .voice-btn.start {
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      color: white;
+    }
+
+    .voice-btn.start:hover {
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .voice-btn.stop {
+      background: var(--danger-color);
+      color: white;
+    }
+
+    .voice-btn.stop:hover {
+      box-shadow: 0 0 15px rgba(244, 63, 94, 0.4);
+      transform: translateY(-1px);
+    }
+
+    /* Bullet list styling for tutor replies */
+    .tutor-rules-list {
+      list-style: none;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .tutor-rules-list li {
+      display: flex;
+      gap: 0.5rem;
+      align-items: flex-start;
+    }
+
+    .tutor-rules-list li::before {
+      content: "•";
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+
+    /* Animations */
+    @keyframes pulse {
+      0% {
+        transform: scale(0.95);
+        opacity: 0.5;
+      }
+
+      100% {
+        transform: scale(1.05);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="app-header">
+      <h1 class="app-title">⚕️ MedTutor AI</h1>
+      <p class="app-subtitle">
+        Real-time interactive MBBS, Nursing, and NCLEX study assistant.
+      </p>
+    </header>
+
+    <div class="dashboard-grid">
+      <!-- Chat Panel -->
+      <div class="chat-container glass-panel">
+        <div class="chat-header">
+          <h3>💬 Tutorial Workspace</h3>
+          <div class="chat-status">
+            <span id="chat-status-indicator" class="status-indicator"></span>
+            <span id="chat-status-text">Disconnected</span>
+            <button id="chat-reconnect-btn" class="icon-btn"
+              style="display: none; width: 28px; height: 28px; border-radius: 6px;" title="Reconnect Chat">🔄</button>
+          </div>
+        </div>
+
+        <div id="messages-list" class="messages-list">
+          <div class="message-wrapper assistant">
+            <span class="message-sender">Tutor</span>
+            <div class="message-bubble">Hello! I am your AI Medical Tutor. I am here to help MBBS, Nursing, and NCLEX
+              students learn and master healthcare topics. You can ask me medical questions or upload documents (PDF,
+              DOCX, TXT) and images (PNG, JPG) for us to discuss!</div>
+          </div>
+        </div>
+
+        <div class="chat-input-container">
+          <div id="file-preview-strip" class="file-preview-strip">
+            <span>📎</span>
+            <span id="file-preview-name" class="file-preview-name">file_name.pdf</span>
+            <button id="remove-file-btn" class="remove-file-btn">✕</button>
+          </div>
+
+          <div class="input-row">
+            <input type="file" id="file-input" style="display: none;" accept=".pdf,.docx,.txt,.png,.jpg,.jpeg">
+            <button id="attach-file-btn" class="icon-btn" title="Attach Document or Image">📎</button>
+            <input type="text" id="text-input" class="text-input" placeholder="Ask a medical or healthcare question...">
+            <button id="send-btn" class="send-btn">
+              <span>Send</span>
+              <span>➔</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Panel -->
+      <div class="sidebar">
+        <!-- Voice Chat Widget -->
+        <div class="widget glass-panel">
+          <h3 class="widget-title">🎙️ WebRTC Voice Call</h3>
+          <p style="font-size: 0.875rem; color: var(--text-secondary)">
+            Engage in immediate, low-latency voice-to-voice communication with your medical tutor using OpenAI Realtime.
+          </p>
+          <div class="voice-status-box">
+            <div class="voice-status-text">
+              Status: <span id="voice-status-value" style="font-weight: bold; text-transform: capitalize;">Idle</span>
+            </div>
+            <span id="voice-status-indicator" class="voice-status-indicator"></span>
+          </div>
+
+          <div id="voice-error"
+            style="color: var(--danger-color); font-size: 0.85rem; text-align: center; display: none;"></div>
+
+          <button id="voice-btn" class="voice-btn start">
+            <span>📞 Connect Voice</span>
+          </button>
+        </div>
+
+        <!-- Education Context Widget -->
+        <div class="widget glass-panel">
+          <h3 class="widget-title">📖 Learning Rules</h3>
+          <ul class="tutor-rules-list">
+            <li>Assists only with MBBS, Nursing, and NCLEX study curricula.</li>
+            <li>Strictly filters out non-medical topics (programming, jokes, hobbies).</li>
+            <li>Supports reading documents (PDF, DOCX, TXT) and vision parsing (PNG, JPG) for clinical cases.</li>
+            <li>Reloads the saved conversation history whenever you return in the same account or browser session.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State management
+    let ws = null;
+    let pc = null;
+    let localStream = null;
+    let attachedFile = null;
+    let streamingElement = null;
+    let voiceStatus = 'idle'; // idle | requesting | connecting | connected | error
+
+    // DOM Elements
+    const chatStatusIndicator = document.getElementById('chat-status-indicator');
+    const chatStatusText = document.getElementById('chat-status-text');
+    const chatReconnectBtn = document.getElementById('chat-reconnect-btn');
+    const messagesList = document.getElementById('messages-list');
+    const textInput = document.getElementById('text-input');
+    const sendBtn = document.getElementById('send-btn');
+    const fileInput = document.getElementById('file-input');
+    const attachFileBtn = document.getElementById('attach-file-btn');
+    const filePreviewStrip = document.getElementById('file-preview-strip');
+    const filePreviewName = document.getElementById('file-preview-name');
+    const removeFileBtn = document.getElementById('remove-file-btn');
+
+    const voiceBtn = document.getElementById('voice-btn');
+    const voiceStatusValue = document.getElementById('voice-status-value');
+    const voiceStatusIndicator = document.getElementById('voice-status-indicator');
+    const voiceErrorDiv = document.getElementById('voice-error');
+    const tutorLogKey = 'mytutor_chat_log_v1';
+    let currentAssistantStreamText = '';
+
+    // function getBackendBaseUrl() {
+    //   return 'http://127.0.0.1:8000';   // local dev
+    // }
+    function getBackendBaseUrl() {
+      return 'https://api.genclex.com';
+    }
+    // Init Websocket connection
+    function connectWebSocket() {
+      setChatStatus('connecting');
+      const backendBaseUrl = getBackendBaseUrl();
+      const wsUrl = backendBaseUrl.replace(/^http/, 'ws') + '/ws/tutor/chat/';
+      console.log('Connecting to WebSocket:', wsUrl);
+
+      ws = new WebSocket(wsUrl);
+
+      ws.onopen = () => {
+        setChatStatus('connected');
+        console.log('WebSocket connection established.');
+      };
+
+      ws.onclose = () => {
+        setChatStatus('disconnected');
+        console.log('WebSocket connection closed.');
+      };
+
+      ws.onerror = (err) => {
+        console.error('WebSocket error:', err);
+        setChatStatus('disconnected');
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const payload = JSON.parse(event.data);
+          switch (payload.type) {
+            case 'chat_history':
+              renderHistory(payload.messages || []);
+              break;
+            case 'chat_start':
+              // Create a placeholder message bubble for the incoming stream
+              currentAssistantStreamText = '';
+              createStreamingBubble();
+              break;
+            case 'chat_chunk':
+              if (streamingElement) {
+                streamingElement.innerText += payload.text;
+                currentAssistantStreamText += payload.text;
+                // Scroll to bottom
+                messagesList.scrollTop = messagesList.scrollHeight;
+              }
+              break;
+            case 'chat_done':
+              finalizeStreamingBubble();
+              if (currentAssistantStreamText.trim()) {
+                addLocalChatLogEntry('assistant', currentAssistantStreamText);
+              }
+              currentAssistantStreamText = '';
+              break;
+            case 'chat_error':
+              alert(`AI Error: ${payload.error}`);
+              removeStreamingBubble();
+              break;
+            default:
+              break;
+          }
+        } catch (err) {
+          console.error('Error handling WebSocket message:', err);
+        }
+      };
+    }
+
+    function setChatStatus(status) {
+      chatStatusIndicator.className = 'status-indicator';
+      chatReconnectBtn.style.display = 'none';
+
+      if (status === 'connected') {
+        chatStatusIndicator.classList.add('connected');
+        chatStatusText.innerText = 'Connected';
+      } else if (status === 'connecting') {
+        chatStatusIndicator.classList.add('connecting');
+        chatStatusText.innerText = 'Connecting...';
+      } else {
+        chatStatusText.innerText = 'Disconnected';
+        chatReconnectBtn.style.display = 'inline-block';
+      }
+    }
+
+    // Message insertion helpers
+    function appendMessage(sender, text) {
+      const msgWrapper = document.createElement('div');
+      msgWrapper.className = `message-wrapper ${sender}`;
+
+      const senderSpan = document.createElement('span');
+      senderSpan.className = 'message-sender';
+      senderSpan.innerText = sender === 'user' ? 'Student' : 'Tutor';
+
+      const bubble = document.createElement('div');
+      bubble.className = 'message-bubble';
+      bubble.innerText = text;
+
+      msgWrapper.appendChild(senderSpan);
+      msgWrapper.appendChild(bubble);
+      messagesList.appendChild(msgWrapper);
+
+      // Scroll to bottom
+      messagesList.scrollTop = messagesList.scrollHeight;
+    }
+
+    function readLocalChatLog() {
+      try {
+        const raw = localStorage.getItem(tutorLogKey);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (error) {
+        console.warn('Could not read local tutor chat log:', error);
+        return [];
+      }
+    }
+
+    function writeLocalChatLog(messages) {
+      try {
+        localStorage.setItem(tutorLogKey, JSON.stringify(messages));
+      } catch (error) {
+        console.warn('Could not save local tutor chat log:', error);
+      }
+    }
+
+    function addLocalChatLogEntry(role, content) {
+      const messages = readLocalChatLog();
+      messages.push({
+        role,
+        content,
+        created_at: new Date().toISOString(),
+      });
+      writeLocalChatLog(messages);
+    }
+
+    function loadLocalChatHistory() {
+      renderHistory(readLocalChatLog());
+    }
+
+    function clearLocalChatHistory() {
+      try {
+        localStorage.removeItem(tutorLogKey);
+      } catch (error) {
+        console.warn('Could not clear local tutor chat log:', error);
+      }
+    }
+
+    function normalizeMessageContent(content) {
+      if (Array.isArray(content)) {
+        return content
+          .map((block) => {
+            if (block && typeof block === 'object' && block.type === 'text') {
+              return block.text || '';
+            }
+            if (block && typeof block === 'object' && block.type === 'image_url') {
+              return '[Image attachment]';
+            }
+            return '';
+          })
+          .filter(Boolean)
+          .join('\n') || '[Attachment]';
+      }
+
+      return content || '';
+    }
+
+    function renderHistory(messages) {
+      const localMessages = readLocalChatLog();
+      const incomingMessages = Array.isArray(messages) ? messages : [];
+      const mergedMessages = [];
+      const seenKeys = new Set();
+
+      const pushMessage = (message) => {
+        if (!message) return;
+
+        const role = message.role === 'user' ? 'user' : 'assistant';
+        const content = normalizeMessageContent(message.content);
+        const createdAt = message.created_at || '';
+        const key = `${role}|${content}|${createdAt}`;
+
+        if (seenKeys.has(key)) {
+          return;
+        }
+
+        seenKeys.add(key);
+        mergedMessages.push({
+          role,
+          content,
+          created_at: createdAt,
+        });
+      };
+
+      localMessages.forEach(pushMessage);
+      incomingMessages.forEach(pushMessage);
+
+      messagesList.innerHTML = '';
+
+      if (!mergedMessages.length) {
+        appendMessage('assistant', 'Your saved conversation will appear here the next time you return.');
+        return;
+      }
+
+      mergedMessages.forEach((message) => {
+        appendMessage(message.role, message.content);
+      });
+
+      writeLocalChatLog(mergedMessages);
+    }
+
+    function createStreamingBubble() {
+      const msgWrapper = document.createElement('div');
+      msgWrapper.className = 'message-wrapper assistant';
+
+      const senderSpan = document.createElement('span');
+      senderSpan.className = 'message-sender';
+      senderSpan.innerText = 'Tutor';
+
+      const bubble = document.createElement('div');
+      bubble.className = 'message-bubble';
+      bubble.style.borderStyle = 'dashed';
+      bubble.id = 'active-stream-bubble';
+
+      msgWrapper.appendChild(senderSpan);
+      msgWrapper.appendChild(bubble);
+      messagesList.appendChild(msgWrapper);
+
+      streamingElement = bubble;
+      messagesList.scrollTop = messagesList.scrollHeight;
+    }
+
+    function finalizeStreamingBubble() {
+      if (streamingElement) {
+        streamingElement.id = '';
+        streamingElement.style.borderStyle = '';
+        streamingElement = null;
+      }
+    }
+
+    function removeStreamingBubble() {
+      if (streamingElement) {
+        const parent = streamingElement.parentElement;
+        if (parent) parent.remove();
+        streamingElement = null;
+      }
+    }
+
+    // Sending chat message
+    function sendMessage() {
+      const text = textInput.value.trim();
+      if (!text && !attachedFile) return;
+
+      if (!ws || ws.readyState !== WebSocket.OPEN) {
+        alert('WebSocket is disconnected. Reconnecting...');
+        connectWebSocket();
+        return;
+      }
+
+      const payload = {
+        text: text
+      };
+
+      if (attachedFile) {
+        payload.file = attachedFile;
+      }
+
+      ws.send(JSON.stringify(payload));
+
+      // Append local message Bubble
+      let localMsgText = text;
+      if (attachedFile) {
+        localMsgText += `\n[Attached File: ${attachedFile.name}]`;
+      }
+      appendMessage('user', localMsgText);
+      addLocalChatLogEntry('user', localMsgText);
+
+      // Clear input and files
+      textInput.value = '';
+      clearFilePreview();
+    }
+
+    // File processing
+    attachFileBtn.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const allowedExtensions = ['pdf', 'docx', 'txt', 'png', 'jpg', 'jpeg'];
+      const ext = file.name.split('.').pop().toLowerCase();
+
+      if (!allowedExtensions.includes(ext)) {
+        alert(`Unsupported file type. Allowed formats: ${allowedExtensions.join(', ')}`);
+        fileInput.value = '';
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const dataUrl = event.target.result;
+        const base64Data = dataUrl.split(',')[1];
+
+        attachedFile = {
+          name: file.name,
+          type: ext,
+          data: base64Data
+        };
+
+        // Show UI preview
+        filePreviewName.innerText = `${file.name} (${ext.toUpperCase()})`;
+        filePreviewStrip.style.display = 'flex';
+      };
+      reader.onerror = () => {
+        alert('Failed to read file.');
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function clearFilePreview() {
+      attachedFile = null;
+      fileInput.value = '';
+      filePreviewStrip.style.display = 'none';
+    }
+
+    removeFileBtn.addEventListener('click', clearFilePreview);
+
+    // Event listeners for text inputs
+    textInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+    sendBtn.addEventListener('click', sendMessage);
+    chatReconnectBtn.addEventListener('click', connectWebSocket);
+
+    // WebRTC Voice Chat logic
+    function setVoiceStatus(status, errorMsg = '') {
+      voiceStatus = status;
+      voiceErrorDiv.style.display = 'none';
+      voiceStatusIndicator.className = 'voice-status-indicator';
+      voiceBtn.className = 'voice-btn';
+
+      if (status === 'idle') {
+        voiceStatusValue.innerText = 'Idle';
+        voiceBtn.innerText = '📞 Connect Voice';
+        voiceBtn.classList.add('start');
+      } else if (status === 'requesting') {
+        voiceStatusValue.innerText = 'Requesting token...';
+        voiceBtn.innerText = 'Connecting...';
+        voiceBtn.classList.add('stop');
+      } else if (status === 'connecting') {
+        voiceStatusValue.innerText = 'Connecting WebRTC...';
+        voiceBtn.innerText = 'Connecting...';
+        voiceBtn.classList.add('stop');
+      } else if (status === 'connected') {
+        voiceStatusValue.innerText = 'Connected';
+        voiceStatusIndicator.classList.add('active');
+        voiceBtn.innerText = '🛑 End Call';
+        voiceBtn.classList.add('stop');
+      } else if (status === 'error') {
+        voiceStatusValue.innerText = 'Error';
+        voiceErrorDiv.innerText = `⚠️ ${errorMsg}`;
+        voiceErrorDiv.style.display = 'block';
+        voiceBtn.innerText = '📞 Connect Voice';
+        voiceBtn.classList.add('start');
+      }
+    }
+
+    async function startVoiceChat() {
+      setVoiceStatus('requesting');
+
+      try {
+        const sessionUrl = `${getBackendBaseUrl()}/api/tutor/voice/session/`;
+
+        console.log('Requesting WebRTC session ephemeral key from:', sessionUrl);
+        const response = await fetch(sessionUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Backend session configuration failed: ${errorText}`);
+        }
+
+        const sessionData = await response.json();
+        console.log('Received session data:', sessionData);
+
+        let ephemeralKey = null;
+        if (sessionData.data && sessionData.data.value) {
+          ephemeralKey = sessionData.data.value;
+        } else if (sessionData.client_secret && sessionData.client_secret.value) {
+          ephemeralKey = sessionData.client_secret.value;
+        } else if (sessionData.value) {
+          ephemeralKey = sessionData.value;
+        }
+
+        if (!ephemeralKey) {
+          throw new Error('Could not find ephemeral token in backend response.');
+        }
+
+        setVoiceStatus('connecting');
+
+        // Setup RTCPeerConnection
+        pc = new RTCPeerConnection();
+
+        // Audio tag to play OpenAI output stream
+        const audioEl = document.createElement('audio');
+        audioEl.autoplay = true;
+
+        pc.ontrack = (event) => {
+          audioEl.srcObject = event.streams[0];
+          document.body.appendChild(audioEl);
+          console.log('WebRTC audio track received.');
+        };
+
+        // Acquire local microphone track
+        localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+
+        // Create WebRTC Offer SDP
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+
+        // Connect directly to OpenAI WebRTC API using Ephemeral key
+        const sdpResponse = await fetch(`https://api.openai.com/v1/realtime/calls`, {
+          method: 'POST',
+          body: offer.sdp,
+          headers: {
+            'Authorization': `Bearer ${ephemeralKey}`,
+            'Content-Type': 'application/sdp'
+          }
+        });
+
+
+        if (!sdpResponse.ok) {
+          const errorResponse = await sdpResponse.text();
+          throw new Error(`OpenAI SDP handshaking failed: ${errorResponse}`);
+        }
+
+        const answerSdp = await sdpResponse.text();
+        const answer = {
+          type: 'answer',
+          sdp: answerSdp
+        };
+
+        await pc.setRemoteDescription(answer);
+        setVoiceStatus('connected');
+        console.log('Voice session established successfully.');
+
+      } catch (err) {
+        console.error('Error starting WebRTC voice call:', err);
+        setVoiceStatus('error', err.message || 'Call failed.');
+        stopVoiceChat();
+      }
+    }
+
+    function stopVoiceChat() {
+      if (pc) {
+        pc.close();
+        pc = null;
+      }
+      if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+        localStream = null;
+      }
+      if (voiceStatus !== 'error') {
+        setVoiceStatus('idle');
+      }
+      console.log('Voice call stopped.');
+    }
+
+    voiceBtn.addEventListener('click', () => {
+      if (voiceStatus === 'idle' || voiceStatus === 'error') {
+        startVoiceChat();
+      } else {
+        stopVoiceChat();
+      }
+    });
+
+    // Run connection on load
+    window.addEventListener('load', () => {
+      loadLocalChatHistory();
+      connectWebSocket();
+    });
+
+  </script>
+</body>
+
+</html>

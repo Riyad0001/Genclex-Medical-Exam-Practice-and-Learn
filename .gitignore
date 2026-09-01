@@ -1,0 +1,74 @@
+# Python Core
+pycache/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.Python
+
+# Virtual Environments
+venv/
+.venv/
+env/
+.env_dir/
+
+# Django specific
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+sqlite3.db
+
+# Project generated folders
+media/
+staticfiles/
+templates/admin/icon.png
+
+# Environment Variables
+.env
+.env.local
+.env.*
+!.env.example
+
+# Sockets and runtime lock files
+*.sock
+*.sock.lock
+*.lock
+
+# AWS / SSH keys
+*.pem
+*.key
+
+# Temp/local scripts
+create_superuser.py
+test_s3.py
+start_tunnel.ps1
+inspect_question.py
+
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE and Editor configs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+
+# Testing and Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/

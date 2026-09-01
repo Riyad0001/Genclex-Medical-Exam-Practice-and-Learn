@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .box {
+            max-width: 500px;
+            margin: auto;
+            font-family: Arial;
+            padding: 20px;
+            border: 1px solid #ddd;
+        }
+        .header {
+            background: #1f2937;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        .otp {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #4f46e5;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <div class="header">
+        {{ site_name }}
+    </div>
+
+    <p>Hi {{ user.first_name }},</p>
+
+    <p>Your OTP code is:</p>
+
+    <div class="otp">{{ otp }}</div>
+
+    <p style="text-align:center;">
+        <a class="btn" href="{{ verify_url }}">Verify Email</a>
+    </p>
+
+    <p style="font-size:12px;color:gray;">
+        This OTP will expire in 2 minutes 30 seconds.
+    </p>
+</div>
+
+</body>
+</html>

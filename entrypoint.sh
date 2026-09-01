@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+
+echo "==> Collecting static files..."
+python manage.py collectstatic --noinput
+
+echo "==> Running migrations..."
+python manage.py migrate --noinput
+
+echo "==> Starting Daphne ASGI server..."
+exec daphne -b 0.0.0.0 -p 8000 project.asgi:application

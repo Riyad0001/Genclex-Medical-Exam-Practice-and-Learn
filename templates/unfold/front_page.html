@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Django API Explorer</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --secondary: #10b981;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --gray: #6b7280;
+            --light-gray: #e5e7eb;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --info: #3b82f6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7f9;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 60%);
+            transform: rotate(30deg);
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        
+        .server-info {
+            background: rgba(255, 255, 255, 0.1);
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            position: relative;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card h2 i {
+            margin-right: 10px;
+        }
+        
+        .endpoint-list {
+            list-style: none;
+        }
+        
+        .endpoint-item {
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s ease;
+        }
+        
+        .endpoint-item:hover {
+            background: #f1f5f9;
+        }
+        
+        .method {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-right: 1rem;
+            min-width: 80px;
+            text-align: center;
+            font-size: 0.8rem;
+        }
+        
+        .get { background: #dcfce7; color: #166534; }
+        .post { background: #dbeafe; color: #1e40af; }
+        .put { background: #fef3c7; color: #92400e; }
+        .delete { background: #fee2e2; color: #991b1b; }
+        .patch { background: #f3e8ff; color: #7e22ce; }
+        .options { background: #fff7ed; color: #ea580c; }
+        .head { background: #e0e7ff; color: #3730a3; }
+        
+        .endpoint-path {
+            font-family: monospace;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        .endpoint-name {
+            margin-left: 1rem;
+            color: var(--gray);
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+        
+        .endpoint-desc {
+            margin-left: auto;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .api-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 1.5rem;
+            color: var(--gray);
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .search-box {
+            padding: 0.75rem 1rem;
+            width: 100%;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-button {
+            padding: 0.5rem 1rem;
+            background: var(--light);
+            border: 1px solid var(--light-gray);
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+        
+        .filter-button:hover, .filter-button.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .stats {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            flex: 1;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray);
+        }
+        
+        .refresh-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .refresh-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(180deg);
+        }
+        
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .endpoint-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .endpoint-desc {
+                margin-left: 0;
+                margin-top: 0.5rem;
+            }
+            
+            .stats {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <button class="refresh-btn" onclick="loadEndpoints()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 0 1 9-9"></path>
+                </svg>
+            </button>
+            <div class="logo">🚀 Django API Explorer</div>
+            <p class="tagline">Automatically discover and test all API endpoints</p>
+            <div class="server-info" id="serverInfo">127.0.0.1:8000</div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="totalEndpoints">0</div>
+                <div class="stat-label">Total Endpoints</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="getEndpoints">0</div>
+                <div class="stat-label">GET Endpoints</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="postEndpoints">0</div>
+                <div class="stat-label">POST Endpoints</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="otherEndpoints">0</div>
+                <div class="stat-label">Other Methods</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2><i>🔍</i> Endpoint Explorer</h2>
+            <input type="text" class="search-box" id="searchInput" placeholder="Search endpoints..." onkeyup="filterEndpoints()">
+            
+            <div class="filter-buttons">
+                <button class="filter-button active" onclick="toggleFilter('all')">All</button>
+                <button class="filter-button" onclick="toggleFilter('GET')">GET</button>
+                <button class="filter-button" onclick="toggleFilter('POST')">POST</button>
+                <button class="filter-button" onclick="toggleFilter('PUT')">PUT</button>
+                <button class="filter-button" onclick="toggleFilter('DELETE')">DELETE</button>
+                <button class="filter-button" onclick="toggleFilter('PATCH')">PATCH</button>
+                <button class="filter-button" onclick="toggleFilter('OTHER')">Other</button>
+            </div>
+            
+            <div id="loading" class="loading">
+                <p>Discovering endpoints...</p>
+            </div>
+            
+            <ul class="endpoint-list" id="endpointList"></ul>
+        </div>
+        
+        <div class="grid">
+            <div class="card">
+                <h2><i>ℹ️</i> API Information</h2>
+                <p>This page automatically discovers all endpoints in your Django application by making requests to the server and analyzing the URL patterns.</p>
+                <p>Endpoints are categorized by HTTP method and can be filtered for easier exploration.</p>
+            </div>
+            
+            <div class="card">
+                <h2><i>🔑</i> Authentication</h2>
+                <p>Some endpoints may require authentication. Use the Google OAuth endpoint for authentication:</p>
+                <p class="endpoint-path">/auth/google/</p>
+                <p>To test authenticated endpoints, you may need to:</p>
+                <ol>
+                    <li>Login via Google OAuth</li>
+                    <li>Use the provided token in your requests</li>
+                </ol>
+            </div>
+            
+            <div class="card">
+                <h2><i>📖</i> Documentation</h2>
+                <p>For detailed API documentation, check out:</p>
+                <ul>
+                    <li><a href="https://www.django-rest-framework.org/" target="_blank">Django REST Framework</a></li>
+                    <li><a href="https://docs.djangoproject.com/" target="_blank">Django Documentation</a></li>
+                </ul>
+                <p>To add more endpoints, define them in your Django URL configuration and they will automatically appear here.</p>
+            </div>
+        </div>
+        
+        <div class="api-info">
+            <span>Django API Explorer v1.0</span>
+            <span id="lastUpdated">Last updated: Just now</span>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <div class="container">
+            <p>Django API Explorer &copy; 2023 | Automatically discovers all endpoints</p>
+        </div>
+    </div>
+
+    <script>
+        // Store endpoints
+        let endpoints = [];
+        let currentFilter = 'all';
+        
+        // Update server info
+        document.getElementById('serverInfo').textContent = window.location.host;
+        
+        // Function to detect endpoints
+        async function discoverEndpoints() {
+            const loadingElement = document.getElementById('loading');
+            const endpointList = document.getElementById('endpointList');
+            
+            // Show loading state
+            loadingElement.style.display = 'block';
+            endpointList.innerHTML = '';
+            
+            try {
+                // Fetch endpoints from the server
+                const response = await fetch(window.location.origin + '/api-discovery/');
+                if (!response.ok) {
+                    throw new Error('API discovery endpoint not found');
+                }
+                
+                const data = await response.json();
+                
+                // Filter out admin endpoints
+                const filteredEndpoints = data.endpoints.filter(endpoint => 
+                    !endpoint.path.includes('/admin/')
+                );
+                
+                // Transform the data to match our format
+                endpoints = filteredEndpoints.flatMap(endpoint => {
+                    return endpoint.methods.map(method => {
+                        return {
+                            method: method,
+                            path: cleanPath(endpoint.path),
+                            name: endpoint.name,
+                            description: getDescriptionFromMethodAndPath(method, endpoint.path, endpoint.name)
+                        };
+                    });
+                });
+                
+                // Update stats
+                updateStats();
+                
+                // Render endpoints
+                renderEndpoints();
+                
+                // Hide loading
+                loadingElement.style.display = 'none';
+                
+                // Update last updated time
+                document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+                
+            } catch (error) {
+                // If the API discovery endpoint doesn't exist, use a fallback
+                console.log('API discovery endpoint not available, using sample data:', error);
+                await loadSampleEndpoints();
+            }
+        }
+        
+        // Function to clean up path regex patterns
+        function cleanPath(path) {
+            // Remove regex anchors and escape sequences
+            return path.replace(/^\\\^/, '/')  // Remove starting ^
+                      .replace(/\\\$$/, '')    // Remove trailing $
+                      .replace(/\\Z/, '')      // Remove \Z
+                      .replace(/\\\//g, '/')   // Replace \/ with /
+                      .replace(/\(.*?\)/g, '{param}')  // Replace parameters with {param}
+                      .replace(/\\</g, '{')    // Replace \< with {
+                      .replace(/\\>/g, '}');   // Replace \> with }
+        }
+        
+        // Helper function to generate descriptions
+        function getDescriptionFromMethodAndPath(method, path, name) {
+            // This would generate descriptions based on method and path
+            const methodDescriptions = {
+                'GET': 'Retrieve',
+                'POST': 'Create',
+                'PUT': 'Update',
+                'DELETE': 'Delete',
+                'PATCH': 'Partially update'
+            };
+            
+            const pathDescriptions = {
+                'api': 'API endpoint',
+                'auth': 'Authentication endpoint',
+                'google_login': 'Google OAuth authentication',
+                'media': 'Media file access'
+            };
+            
+            // Check for name matches first
+            if (name && name in pathDescriptions) {
+                return pathDescriptions[name];
+            }
+            
+            // Check for pattern matches
+            if (path.includes('{param}') || path.includes('<pk>') || path.includes('<id>')) {
+                return `${methodDescriptions[method] || method} a specific item`;
+            }
+            
+            if (path.includes('add')) {
+                return 'Add a new item';
+            }
+            
+            if (path.includes('change')) {
+                return 'Change an existing item';
+            }
+            
+            if (path.includes('user')) {
+                return `${methodDescriptions[method] || method} user data`;
+            }
+            
+            if (path.includes('post')) {
+                return `${methodDescriptions[method] || method} post data`;
+            }
+            
+            // Default description
+            return `${method} endpoint for ${cleanPath(path)}`;
+        }
+        
+        // Function to load sample endpoints if API discovery fails
+        async function loadSampleEndpoints() {
+            const loadingElement = document.getElementById('loading');
+            
+            // Simulate network delay
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            
+            
+            endpoints = sampleEndpoints;
+            
+            // Update stats
+            updateStats();
+            
+            // Render endpoints
+            renderEndpoints();
+            
+            // Hide loading
+            loadingElement.style.display = 'none';
+            
+            // Update last updated time
+            document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+        }
+        
+        // Function to render endpoints based on current filter
+        function renderEndpoints() {
+            const endpointList = document.getElementById('endpointList');
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
+            
+            // Filter endpoints
+            const filteredEndpoints = endpoints.filter(endpoint => {
+                const matchesSearch = endpoint.path.toLowerCase().includes(searchText) || 
+                                    endpoint.description.toLowerCase().includes(searchText) ||
+                                    endpoint.name.toLowerCase().includes(searchText);
+                
+                const matchesFilter = currentFilter === 'all' || 
+                                    (currentFilter === 'OTHER' ? 
+                                        !['GET', 'POST', 'PUT', 'DELETE', 'PATCH'].includes(endpoint.method) :
+                                        endpoint.method === currentFilter);
+                
+                return matchesSearch && matchesFilter;
+            });
+            
+            // Clear list
+            endpointList.innerHTML = '';
+            
+            // Add endpoints to list
+            if (filteredEndpoints.length === 0) {
+                endpointList.innerHTML = '<div class="loading"><p>No endpoints found matching your criteria</p></div>';
+                return;
+            }
+            
+            filteredEndpoints.forEach(endpoint => {
+                const li = document.createElement('li');
+                li.className = 'endpoint-item';
+                li.innerHTML = `
+                    <span class="method ${endpoint.method.toLowerCase()}">${endpoint.method}</span>
+                    <span class="endpoint-path">${endpoint.path}</span>
+                    <span class="endpoint-name">${endpoint.name}</span>
+                    <span class="endpoint-desc">${endpoint.description}</span>
+                `;
+                endpointList.appendChild(li);
+            });
+        }
+        
+        // Function to update statistics
+        function updateStats() {
+            const total = endpoints.length;
+            const getCount = endpoints.filter(e => e.method === 'GET').length;
+            const postCount = endpoints.filter(e => e.method === 'POST').length;
+            const otherCount = total - getCount - postCount - 
+                            endpoints.filter(e => e.method === 'PUT').length -
+                            endpoints.filter(e => e.method === 'DELETE').length -
+                            endpoints.filter(e => e.method === 'PATCH').length;
+            
+            document.getElementById('totalEndpoints').textContent = total;
+            document.getElementById('getEndpoints').textContent = getCount;
+            document.getElementById('postEndpoints').textContent = postCount;
+            document.getElementById('otherEndpoints').textContent = otherCount;
+        }
+        
+        // Function to filter endpoints
+        function filterEndpoints() {
+            renderEndpoints();
+        }
+        
+        // Function to toggle filter
+        function toggleFilter(filter) {
+            currentFilter = filter;
+            
+            // Update active button
+            document.querySelectorAll('.filter-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            event.target.classList.add('active');
+            
+            // Re-render endpoints
+            renderEndpoints();
+        }
+        
+        // Function to load endpoints (called by refresh button)
+        function loadEndpoints() {
+            discoverEndpoints();
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            discoverEndpoints();
+        });
+    </script>
+</body>
+</html>

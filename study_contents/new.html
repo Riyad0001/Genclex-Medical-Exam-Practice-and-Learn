@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wilbury Capital — Independent Investment Office</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--P:#5C0035;--PT:#F7F0F4;--G:#A8822A;--GL:#C9A84C;--W:#FFFFFF;--OFF:#FAFAF8;--NEAR:#F4F1F3;--CH:#2A2228;--MID:#6B5C65;--RULE:#E0D5DB}
+html{scroll-behavior:smooth}
+body{font-family:'Jost',sans-serif;font-weight:300;color:var(--CH);background:var(--W);overflow-x:hidden;line-height:1.7}
+
+/* HERO v2 - white dominant */
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;background:var(--W);position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--P);z-index:2}
+.hero-left{display:flex;flex-direction:column;justify-content:center;padding:100px 64px 100px 96px;border-right:1px solid var(--RULE);position:relative;z-index:1}
+.hero-eyebrow{font-size:10px;font-weight:600;letter-spacing:5px;color:var(--G);text-transform:uppercase;margin-bottom:36px;animation:fadeUp .7s .1s both}
+.hero-wordmark{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(52px,6.5vw,88px);line-height:.92;color:var(--P);letter-spacing:8px;margin-bottom:40px;animation:fadeUp .7s .25s both}
+.hero-rule{width:72px;height:1.5px;background:var(--G);margin-bottom:32px;animation:fadeUp .7s .38s both}
+.hero-tagline{font-family:'EB Garamond',serif;font-size:22px;font-style:italic;color:var(--MID);line-height:1.55;max-width:400px;margin-bottom:52px;animation:fadeUp .7s .48s both}
+.hero-pills{display:flex;flex-direction:column;gap:14px;animation:fadeUp .7s .6s both}
+.hero-pill{display:flex;align-items:center;gap:14px}
+.hero-pill-bar{width:16px;height:1.5px;background:var(--G);flex-shrink:0}
+.hero-pill span{font-size:13px;font-weight:400;letter-spacing:.3px;color:var(--MID)}
+.hero-right{background:var(--P);display:flex;flex-direction:column;justify-content:center;padding:100px 80px 100px 64px;position:relative;overflow:hidden}
+.hero-right::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-45deg,transparent,transparent 80px,rgba(255,255,255,.015) 80px,rgba(255,255,255,.015) 81px);pointer-events:none}
+.hero-right-label{font-size:9px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--GL);margin-bottom:36px;position:relative;z-index:1;animation:fadeUp .7s .4s both}
+.hero-stat-group{display:flex;flex-direction:column;gap:0;position:relative;z-index:1;animation:fadeUp .7s .5s both}
+.hero-stat{padding:28px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.hero-stat:first-child{padding-top:0}
+.hero-stat:last-child{border-bottom:none;padding-bottom:0}
+.hero-stat-num{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(40px,5vw,60px);line-height:1;color:#fff;letter-spacing:-1px;margin-bottom:8px}
+.hero-stat-label{font-size:12px;font-weight:400;color:rgba(255,255,255,.45);line-height:1.5;max-width:280px}
+
+/* NAV */
+.nav-strip{background:var(--W);border-bottom:1px solid var(--RULE);border-top:3px solid var(--P);padding:0 80px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.nav-brand{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:15px;letter-spacing:3px;color:var(--P);padding:20px 0;text-decoration:none}
+.nav-links{display:flex;gap:36px;list-style:none}
+.nav-links a{font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--MID);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--P)}
+
+/* SECTIONS */
+.section{padding:100px 80px}
+.section-label{font-size:10px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--G);margin-bottom:20px}
+.section-title{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(32px,4vw,52px);line-height:1.1;color:var(--P);margin-bottom:20px}
+.section-intro{font-family:'EB Garamond',serif;font-size:19px;color:var(--MID);max-width:640px;line-height:1.7;margin-bottom:56px}
+.gold-rule{width:60px;height:1.5px;background:var(--G);margin:20px 0 40px}
+
+/* WHAT WE ARE */
+.what-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--RULE);border:1px solid var(--RULE)}
+.what-card{background:var(--W);padding:40px 44px;position:relative;overflow:hidden;transition:background .25s}
+.what-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--P);transform:scaleY(0);transform-origin:bottom;transition:transform .3s cubic-bezier(.4,0,.2,1)}
+.what-card:hover::before{transform:scaleY(1)}
+.what-card:hover{background:var(--PT)}
+.what-card-num{font-family:'Cormorant Garamond',serif;font-size:11px;font-weight:500;letter-spacing:3px;color:var(--G);margin-bottom:16px}
+.what-card-title{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;color:var(--P);margin-bottom:12px;line-height:1.2}
+.what-card-body{font-size:14px;color:var(--MID);line-height:1.7;font-weight:400}
+
+/* EVIDENCE */
+.evidence{background:var(--P);padding:100px 80px;position:relative;overflow:hidden}
+.evidence .section-label{color:var(--GL)}
+.evidence .section-title{color:#fff}
+.evidence .gold-rule{background:var(--G)}
+.evidence-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.1);margin-bottom:64px}
+.evidence-card{background:rgba(255,255,255,.04);padding:40px 36px;transition:background .2s}
+.evidence-card:hover{background:rgba(255,255,255,.08)}
+.evidence-pct{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:72px;line-height:1;color:#fff;margin-bottom:8px;letter-spacing:-2px}
+.evidence-cat{font-size:10px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--GL);margin-bottom:16px}
+.evidence-body{font-size:13px;color:rgba(255,255,255,.5);line-height:1.7;font-weight:400}
+.evidence-quote{border-left:2px solid var(--G);padding:24px 32px;background:rgba(255,255,255,.04)}
+.evidence-quote p{font-family:'EB Garamond',serif;font-style:italic;font-size:20px;color:rgba(255,255,255,.75);line-height:1.6}
+.evidence-quote cite{display:block;margin-top:12px;font-size:11px;font-weight:500;letter-spacing:2px;color:var(--GL);text-transform:uppercase;font-style:normal}
+
+/* RESEARCH - FIX 1 */
+.research{background:var(--NEAR);padding:80px;border-top:1px solid var(--RULE);border-bottom:1px solid var(--RULE)}
+.research-header{display:grid;grid-template-columns:1fr 3fr;gap:80px;align-items:end;margin-bottom:32px}
+.research-header-aside p{font-family:'EB Garamond',serif;font-size:17px;color:var(--MID);font-style:italic;line-height:1.6;margin-top:8px}
+.research-header-title h3{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:28px;color:var(--P);line-height:1.15}
+.research-cards-row{display:grid;grid-template-columns:1fr 3fr;gap:80px}
+.research-cards-col{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.research-card{background:var(--W);padding:32px;border-left:3px solid var(--P)}
+.research-card-meta{font-size:11px;font-weight:600;letter-spacing:1.5px;color:var(--G);text-transform:uppercase;margin-bottom:10px}
+.research-card-title{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:17px;color:var(--P);margin-bottom:10px;line-height:1.25}
+.research-card-body{font-size:13px;color:var(--MID);line-height:1.65;font-weight:400}
+
+/* ETF */
+.etf-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+.etf-card{padding:36px 40px;border:1px solid var(--RULE);transition:border-color .25s,box-shadow .25s}
+.etf-card:hover{border-color:var(--P);box-shadow:0 4px 32px rgba(92,0,53,.06)}
+.etf-check{width:32px;height:32px;border-radius:50%;background:var(--P);display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+.etf-check svg{width:14px;height:14px}
+.etf-card-title{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:20px;color:var(--P);margin-bottom:10px}
+.etf-card-body{font-size:14px;color:var(--MID);line-height:1.7;font-weight:400}
+
+/* COMPOUNDING */
+.compound{background:var(--OFF);padding:100px 80px;border-top:1px solid var(--RULE)}
+.compound-layout{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.compound-stats{display:flex;flex-direction:column}
+.compound-stat{display:flex;align-items:baseline;gap:16px;padding:28px 0;border-bottom:1px solid var(--RULE)}
+.compound-stat:first-child{padding-top:0}
+.compound-stat:last-child{border-bottom:none}
+.compound-stat-val{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:52px;line-height:1;color:var(--P);letter-spacing:-1px;flex-shrink:0}
+.compound-stat-desc{display:flex;flex-direction:column;gap:4px}
+.compound-stat-desc strong{font-family:'Jost',sans-serif;font-size:13px;font-weight:500;color:var(--CH)}
+.compound-stat-desc span{font-size:12px;color:var(--MID);font-weight:400}
+.compound-chart-wrap{display:flex;flex-direction:column;gap:14px}
+.chart-title{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--MID)}
+.chart-legend{display:flex;gap:28px}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--MID);font-weight:400}
+.ls{width:24px;height:2.5px;background:var(--P);border-radius:1px}
+.ld{width:24px;height:0;border-top:2px dashed var(--GL)}
+.assumptions-box{background:var(--PT);padding:22px 26px;display:grid;grid-template-columns:1fr 1fr;gap:0 24px}
+.ar{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--RULE);font-size:12px}
+.ar:last-child,.ar:nth-last-child(2){border-bottom:none}
+.ar .k{color:var(--MID);font-weight:400}
+.ar .v{color:var(--P);font-weight:600;font-family:'Jost',sans-serif}
+
+/* MODEL */
+.model-pillars{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--RULE);border:1px solid var(--RULE);margin-bottom:0}
+.model-pillar{background:var(--W);padding:32px 24px;text-align:center;transition:background .2s}
+.model-pillar:hover{background:var(--PT)}
+.pillar-num{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--RULE);line-height:1;margin-bottom:16px}
+.pillar-title{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:16px;color:var(--P);margin-bottom:10px;line-height:1.25}
+.pillar-body{font-size:12px;color:var(--MID);line-height:1.6;font-weight:400}
+
+/* WIN */
+.win-section{background:var(--NEAR);padding:80px;border-top:1px solid var(--RULE)}
+.win-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:32px}
+.win-card{display:flex;flex-direction:column;gap:12px}
+.win-stat{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:500;color:var(--P);line-height:1;letter-spacing:-1px}
+.win-rule{width:32px;height:1.5px;background:var(--G)}
+.win-title{font-size:13px;font-weight:600;letter-spacing:.5px;color:var(--CH)}
+.win-body{font-size:13px;color:var(--MID);line-height:1.65;font-weight:400}
+
+/* REVENUE - FIX 3 */
+.revenue{background:var(--W);padding:100px 80px;border-top:1px solid var(--RULE);display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.revenue-cards{display:flex;flex-direction:column;gap:24px}
+.revenue-card{border:1px solid var(--RULE);padding:40px 44px}
+.revenue-card.featured{border-color:var(--P);background:var(--PT);text-align:center;padding:52px 44px}
+.revenue-card-opt{font-size:10px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--G);margin-bottom:10px}
+/* featured: large centred type, no dollar amount */
+.featured-type{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:500;color:var(--P);margin-bottom:16px;letter-spacing:.5px}
+.featured-rule{width:48px;height:1.5px;background:var(--G);margin:0 auto 20px}
+.revenue-card-sub{font-size:13px;color:var(--MID);font-style:italic;margin-bottom:20px}
+.revenue-card-detail{font-size:13.5px;color:var(--MID);line-height:1.7;font-weight:400}
+.revenue-card-label{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:28px;color:var(--P);margin-bottom:8px}
+
+/* CLOSING */
+.closing{background:var(--P);padding:100px 80px;display:grid;grid-template-columns:2fr 1fr;gap:80px;align-items:center;position:relative;overflow:hidden}
+.closing::before{content:'W';position:absolute;right:-40px;top:50%;transform:translateY(-50%);font-family:'Cormorant Garamond',serif;font-size:480px;font-weight:300;color:rgba(255,255,255,.03);pointer-events:none;letter-spacing:-20px}
+.closing-quote{font-family:'EB Garamond',serif;font-style:italic;font-size:clamp(22px,3vw,32px);color:rgba(255,255,255,.85);line-height:1.5;position:relative;z-index:1}
+.closing-quote::before{content:'\201C';font-size:80px;color:var(--G);line-height:0;display:block;margin-bottom:20px}
+.closing-right{display:flex;flex-direction:column;gap:24px;position:relative;z-index:1}
+.closing-wordmark{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:32px;letter-spacing:5px;color:#fff}
+.closing-rule{width:48px;height:1.5px;background:var(--G)}
+.closing-descriptor{font-size:12px;font-weight:400;color:rgba(255,255,255,.45);line-height:1.8}
+.closing-cta{display:inline-block;padding:14px 32px;border:1px solid rgba(255,255,255,.3);color:#fff;text-decoration:none;font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;width:fit-content;transition:background .25s,border-color .25s}
+.closing-cta:hover{background:rgba(255,255,255,.08);border-color:var(--G)}
+
+/* FIX 4 - FOOTER 2026 */
+footer{background:#1A0010;padding:32px 80px;display:flex;justify-content:space-between;align-items:center}
+footer span{font-size:11px;color:rgba(255,255,255,.25);letter-spacing:.5px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:900px){
+  .hero,.compound-layout,.revenue,.closing{grid-template-columns:1fr}
+  .hero-right{padding:60px 40px}
+  .what-grid,.etf-grid,.win-grid{grid-template-columns:1fr}
+  .model-pillars{grid-template-columns:repeat(2,1fr)}
+  .research-header,.research-cards-row{grid-template-columns:1fr;gap:32px}
+  .research-cards-col{grid-template-columns:1fr}
+  .section,.evidence,.compound,.win-section,.revenue,.closing,footer,.research{padding-left:32px;padding-right:32px}
+  .nav-strip{padding:0 32px}
+  .hero-left{padding:60px 32px 60px 48px}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO v2 -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Independent Investment Office</div>
+    <div class="hero-wordmark">WILBURY<br>CAPITAL</div>
+    <div class="hero-rule"></div>
+    <p class="hero-tagline">Institutional quality. Aligned incentives.<br>No compromise.</p>
+    <div class="hero-pills">
+      <div class="hero-pill"><div class="hero-pill-bar"></div><span>Advisory-only · No custody · No execution</span></div>
+      <div class="hero-pill"><div class="hero-pill-bar"></div><span>Serving the $25M – $250M wealth segment</span></div>
+      <div class="hero-pill"><div class="hero-pill-bar"></div><span>Pure independence. Total alignment.</span></div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-right-label">The Investment Case</div>
+    <div class="hero-stat-group">
+      <div class="hero-stat">
+        <div class="hero-stat-num">~90%</div>
+        <div class="hero-stat-label">of portfolio return variability is driven by asset allocation — not manager selection</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">85–90%</div>
+        <div class="hero-stat-label">of active US equity managers underperform their benchmark over 10–15 years</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">+28%</div>
+        <div class="hero-stat-label">more terminal wealth from ETF discipline vs. active management over 20 years</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NAV -->
+<nav class="nav-strip">
+  <a href="#" class="nav-brand">WILBURY CAPITAL</a>
+  <ul class="nav-links">
+    <li><a href="#what">What We Are</a></li>
+    <li><a href="#evidence">The Evidence</a></li>
+    <li><a href="#etfs">ETF Approach</a></li>
+    <li><a href="#model">Our Model</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- WHAT WE ARE -->
+<section class="section" id="what">
+  <div class="section-label">What We Are</div>
+  <h2 class="section-title">A cost-efficient, conflict-free<br>alternative to traditional wealth management</h2>
+  <div class="gold-rule"></div>
+  <p class="section-intro">Wilbury Capital operates as an Independent Investment Office — providing institutional-grade investment oversight without the conflict of interest embedded in banks, private wealth managers, and traditional family offices.</p>
+  <div class="what-grid">
+    <div class="what-card"><div class="what-card-num">01</div><div class="what-card-title">Asset Allocation</div><p class="what-card-body">Strategic and tactical allocation across asset classes, grounded in research and designed for long-term capital preservation and growth. Implemented using low-cost ETFs to maximise net returns.</p></div>
+    <div class="what-card"><div class="what-card-num">02</div><div class="what-card-title">Portfolio Oversight</div><p class="what-card-body">Consolidated reporting across all custodians and mandates. Clients retain full custody of assets with their chosen institutions — we provide the intelligence layer above.</p></div>
+    <div class="what-card"><div class="what-card-num">03</div><div class="what-card-title">Manager Selection</div><p class="what-card-body">Rigorous, evidence-based screening of any active mandates — applying the same discipline used by endowments and sovereign wealth funds, sized for the $25M–$250M segment.</p></div>
+    <div class="what-card"><div class="what-card-num">04</div><div class="what-card-title">Performance Monitoring</div><p class="what-card-body">Risk-adjusted benchmarking on a continuous basis. We measure what matters — real after-cost, after-tax returns versus appropriate benchmarks, not marketing metrics.</p></div>
+  </div>
+</section>
+
+<!-- EVIDENCE -->
+<section class="evidence" id="evidence">
+  <div class="section-label">The Evidence</div>
+  <h2 class="section-title">Most active management<br>is a poor use of capital</h2>
+  <div class="gold-rule"></div>
+  <div class="evidence-grid">
+    <div class="evidence-card"><div class="evidence-pct">87%</div><div class="evidence-cat">US Large Cap</div><p class="evidence-body">of active large-cap funds underperformed the S&amp;P 500 over 15 years. Source: S&amp;P SPIVA Scorecard 2023/2024.</p></div>
+    <div class="evidence-card"><div class="evidence-pct">83%</div><div class="evidence-cat">International Equity</div><p class="evidence-body">of active international equity funds trailed their benchmarks over a 10-year period. The pattern holds globally.</p></div>
+    <div class="evidence-card"><div class="evidence-pct">91%</div><div class="evidence-cat">Fixed Income</div><p class="evidence-body">of active bond funds underperformed passive equivalents over 15 years — even in asset classes where active claims an edge.</p></div>
+  </div>
+  <div class="evidence-quote">
+    <p>Outperformance is inconsistent and nearly impossible to identify in advance. Top-quartile managers in one period are no more likely to be top-quartile in the next — making manager selection a structurally unreliable strategy.</p>
+    <cite>S&amp;P Persistence Scorecard · SPIVA 2024</cite>
+  </div>
+</section>
+
+<!-- RESEARCH - FIX 1: label/desc left aligned with Brinson title right -->
+<section class="research">
+  <div class="research-header">
+    <div class="research-header-aside">
+      <div class="section-label">Academic Foundation</div>
+      <p>Decades of landmark research reach the same conclusion: asset allocation is the dominant driver of long-term portfolio outcomes.</p>
+    </div>
+    <div class="research-header-title">
+      <h3>Brinson, Hood &amp; Beebower — and the research that followed</h3>
+    </div>
+  </div>
+  <div class="research-cards-row">
+    <div></div>
+    <div class="research-cards-col">
+      <div class="research-card">
+        <div class="research-card-meta">Brinson, Hood &amp; Beebower · 1986</div>
+        <div class="research-card-title">Determinants of Portfolio Performance</div>
+        <p class="research-card-body">Studied 91 large US pension funds over a decade. Strategic asset allocation explained 93.6% of quarterly return variation — dwarfing security selection and market timing combined.</p>
+      </div>
+      <div class="research-card">
+        <div class="research-card-meta">Brinson, Singer &amp; Beebower · 1991</div>
+        <div class="research-card-title">Determinants of Portfolio Performance II</div>
+        <p class="research-card-body">Follow-up study of 82 funds confirmed the original findings. Asset allocation dominates. Active bets add noise, not value. Getting the allocation right matters more than picking the manager.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ETF ADVANTAGE -->
+<section class="section" id="etfs">
+  <div class="section-label">The ETF Approach</div>
+  <h2 class="section-title">Control what you can.<br>ETFs are the smarter instrument.</h2>
+  <div class="gold-rule"></div>
+  <p class="section-intro">Rather than searching for the rare manager who might outperform — and paying heavily for the search — Wilbury Capital uses low-cost ETFs to capture market returns efficiently and direct the fee savings back to clients.</p>
+  <div class="etf-grid">
+    <div class="etf-card"><div class="etf-check"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8l3.5 3.5L13 5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="etf-card-title">Capture Market Returns Efficiently</div><p class="etf-card-body">ETFs deliver broad index exposure with minimal tracking error. Clients receive the return the market offers without dilution from active decisions that, on average, subtract value.</p></div>
+    <div class="etf-card"><div class="etf-check"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8l3.5 3.5L13 5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="etf-card-title">Lower Fees = Higher Net Returns</div><p class="etf-card-body">Average ETF expense ratio: 0.05–0.20%. Average active fund: 0.75–1.25%. Over 20 years, a 1% fee difference on $5M compounds to over $1.1M in foregone client wealth.</p></div>
+    <div class="etf-card"><div class="etf-check"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8l3.5 3.5L13 5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="etf-card-title">Full Transparency &amp; Daily Liquidity</div><p class="etf-card-body">Daily holdings disclosure, intraday liquidity, no lock-up periods. Clients always know exactly what they own and can act immediately — critical for institutional-grade governance.</p></div>
+    <div class="etf-card"><div class="etf-check"><svg viewBox="0 0 16 16" fill="none"><path d="M3 8l3.5 3.5L13 5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="etf-card-title">Eliminate Manager Selection Risk</div><p class="etf-card-body">No need to research, monitor, or replace underperforming managers. The structural alpha from disciplined allocation and cost savings replaces the illusion of manager alpha.</p></div>
+  </div>
+</section>
+
+<!-- COMPOUNDING - FIX 2: clean chart -->
+<section class="compound">
+  <div class="section-label">The Cost of Inaction</div>
+  <h2 class="section-title">What fees and underperformance<br>cost over 20 years</h2>
+  <div class="gold-rule"></div>
+  <div class="compound-layout">
+    <div class="compound-stats">
+      <div class="compound-stat"><div class="compound-stat-val">+$70</div><div class="compound-stat-desc"><strong>Additional wealth per $100 invested</strong><span>ETF vs. active management over 20 years</span></div></div>
+      <div class="compound-stat"><div class="compound-stat-val">+28%</div><div class="compound-stat-desc"><strong>More terminal wealth</strong><span>From eliminating the 1.3% annual cost drag</span></div></div>
+      <div class="compound-stat"><div class="compound-stat-val">1.3%</div><div class="compound-stat-desc"><strong>Annual drag: 0.5% fees + 0.8% underperformance</strong><span>Supported by Morningstar &amp; SPIVA 2024 data</span></div></div>
+    </div>
+    <div class="compound-chart-wrap">
+      <div class="chart-title">Growth of $100 · 20-year horizon</div>
+      <!-- FIX 2: computed polyline points, no closing artefact.
+           Chart x: 52..432 (380px / 20 steps = 19px each)
+           Chart y: 290 (bottom=$100) to 26 (top~=$330), range=264px over $230
+           ETF 6%: y = 290 - (100*1.06^i - 100)/230*264
+           Active 4.7%: y = 290 - (100*1.047^i - 100)/230*264 -->
+      <svg viewBox="0 0 480 310" xmlns="http://www.w3.org/2000/svg" width="100%" style="display:block">
+        <!-- gridlines -->
+        <line x1="52" y1="26"  x2="432" y2="26"  stroke="#E8DFE4" stroke-width="0.5" stroke-dasharray="3,3"/>
+        <line x1="52" y1="92"  x2="432" y2="92"  stroke="#E8DFE4" stroke-width="0.5" stroke-dasharray="3,3"/>
+        <line x1="52" y1="158" x2="432" y2="158" stroke="#E8DFE4" stroke-width="0.5" stroke-dasharray="3,3"/>
+        <line x1="52" y1="224" x2="432" y2="224" stroke="#E8DFE4" stroke-width="0.5" stroke-dasharray="3,3"/>
+        <line x1="52" y1="290" x2="432" y2="290" stroke="#E0D5DB" stroke-width="0.75"/>
+        <line x1="52" y1="26"  x2="52"  y2="290" stroke="#E0D5DB" stroke-width="0.75"/>
+        <!-- y labels -->
+        <text x="44" y="30"  text-anchor="end" font-family="Jost,sans-serif" font-size="9" fill="#9B8C95">$300</text>
+        <text x="44" y="96"  text-anchor="end" font-family="Jost,sans-serif" font-size="9" fill="#9B8C95">$250</text>
+        <text x="44" y="162" text-anchor="end" font-family="Jost,sans-serif" font-size="9" fill="#9B8C95">$200</text>
+        <text x="44" y="228" text-anchor="end" font-family="Jost,sans-serif" font-size="9" fill="#9B8C95">$150</text>
+        <text x="44" y="294" text-anchor="end" font-family="Jost,sans-serif" font-size="9" fill="#9B8C95">$100</text>
+        <!-- x labels -->
+        <text x="52"  y="305" text-anchor="middle" font-family="Jost,sans-serif" font-size="9" fill="#9B8C95">0</text>
+        <text x="147" y="305" text-anchor="middle" font-family="Jost,sans-serif" font-size="9" fill="#9B8C95">5</text>
+        <text x="242" y="305" text-anchor="middle" font-family="Jost,sans-serif" font-size="9" fill="#9B8C95">10</text>
+        <text x="337" y="305" text-anchor="middle" font-family="Jost,sans-serif" font-size="9" fill="#9B8C95">15</text>
+        <text x="432" y="305" text-anchor="middle" font-family="Jost,sans-serif" font-size="9" fill="#9B8C95">20 yrs</text>
+        <!-- Active line (dashed gold) drawn first -->
+        <polyline fill="none" stroke="#C9A84C" stroke-width="1.8" stroke-dasharray="5,3" stroke-linejoin="round"
+          points="52.0,290.0 71.0,284.4 90.0,278.6 109.0,272.5 128.0,266.1 147.0,259.5 166.0,252.5 185.0,245.3 204.0,237.7 223.0,229.8 242.0,221.6 261.0,213.0 280.0,204.1 299.0,194.8 318.0,185.2 337.0,175.2 356.0,164.8 375.0,154.0 394.0,142.8 413.0,131.2 432.0,119.2"/>
+        <!-- ETF line (solid purple) on top -->
+        <polyline fill="none" stroke="#5C0035" stroke-width="2.5" stroke-linejoin="round"
+          points="52.0,290.0 71.0,283.2 90.0,275.9 109.0,268.4 128.0,260.4 147.0,252.0 166.0,243.2 185.0,234.0 204.0,224.3 223.0,214.1 242.0,203.5 261.0,192.4 280.0,180.8 299.0,168.6 318.0,155.9 337.0,142.7 356.0,128.9 375.0,114.6 394.0,99.7 413.0,84.2 432.0,68.2"/>
+        <!-- end dots -->
+        <circle cx="432" cy="68.2"  r="4" fill="#5C0035"/>
+        <circle cx="432" cy="119.2" r="4" fill="#C9A84C"/>
+        <text x="438" y="72"  font-family="Jost,sans-serif" font-size="10" font-weight="600" fill="#5C0035">$320.71</text>
+        <text x="438" y="123" font-family="Jost,sans-serif" font-size="10" font-weight="600" fill="#A8822A">$250.57</text>
+        <!-- gap annotation -->
+        <line x1="430" y1="68.2" x2="430" y2="119.2" stroke="#5C0035" stroke-width="0.75" stroke-dasharray="2,2"/>
+        <text x="420" y="96" text-anchor="middle" font-family="Jost,sans-serif" font-size="8.5" fill="#5C0035" transform="rotate(-90 420 96)">+$70.14</text>
+      </svg>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="ls"></div><span>ETF Portfolio (6.0% p.a.)</span></div>
+        <div class="legend-item"><div class="ld"></div><span>Active Portfolio (4.7% p.a.)</span></div>
+      </div>
+      <div class="assumptions-box">
+        <div class="ar"><span class="k">Initial investment</span><span class="v">$100</span></div>
+        <div class="ar"><span class="k">ETF return</span><span class="v">6.0% p.a.</span></div>
+        <div class="ar"><span class="k">Fee drag</span><span class="v">–0.5% p.a.</span></div>
+        <div class="ar"><span class="k">Performance drag</span><span class="v">–0.8% p.a.</span></div>
+        <div class="ar"><span class="k">Net active return</span><span class="v">4.7% p.a.</span></div>
+        <div class="ar"><span class="k">Horizon</span><span class="v">20 years</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODEL -->
+<section class="section" id="model">
+  <div class="section-label">Our Model</div>
+  <h2 class="section-title">Institutional investment oversight<br>without the institutional cost</h2>
+  <div class="gold-rule"></div>
+  <p class="section-intro">Wilbury Capital provides everything a sophisticated family office delivers — minus the conflict of interest, the fixed cost base, and the minimum AUM that excludes most high-net-worth investors.</p>
+  <div class="model-pillars">
+    <div class="model-pillar"><div class="pillar-num">I</div><div class="pillar-title">Strategic Asset Allocation</div><p class="pillar-body">Mean-variance optimised portfolios grounded in CFA-standard capital market assumptions, rebalanced dynamically.</p></div>
+    <div class="model-pillar"><div class="pillar-num">II</div><div class="pillar-title">ETF Implementation</div><p class="pillar-body">Low-cost, transparent, liquid exposure across eight asset classes including REITs, EM, and hedge fund indices.</p></div>
+    <div class="model-pillar"><div class="pillar-num">III</div><div class="pillar-title">Risk Monitoring</div><p class="pillar-body">Continuous risk attribution, volatility tracking, and drawdown analysis across consolidated client portfolios.</p></div>
+    <div class="model-pillar"><div class="pillar-num">IV</div><div class="pillar-title">Manager Oversight</div><p class="pillar-body">Rigorous evaluation and ongoing monitoring of any active mandates, with clear performance accountability.</p></div>
+    <div class="model-pillar"><div class="pillar-num">V</div><div class="pillar-title">Reporting &amp; Governance</div><p class="pillar-body">Institutional-grade consolidated reporting across all custodians, asset classes, and geographies.</p></div>
+  </div>
+</section>
+
+<!-- WHY WE WIN -->
+<section class="win-section">
+  <div class="section-label">Why We Win</div>
+  <div class="win-grid">
+    <div class="win-card"><div class="win-stat">70–85%</div><div class="win-rule"></div><div class="win-title">Cost Efficiency</div><p class="win-body">Clients replace a $1M–$3M annual cost base with approximately $150k–$450k — while receiving the same investment intelligence.</p></div>
+    <div class="win-card"><div class="win-stat">100%</div><div class="win-rule"></div><div class="win-title">Independence</div><p class="win-body">No proprietary products, no commissions, no custody. Fully client-aligned — we succeed only when clients succeed.</p></div>
+    <div class="win-card"><div class="win-stat">50–150</div><div class="win-rule"></div><div class="win-title">bps Better Outcomes</div><p class="win-body">Fee savings and disciplined allocation translate directly into measurable, durable improvement in net returns.</p></div>
+    <div class="win-card"><div class="win-stat">$0</div><div class="win-rule"></div><div class="win-title">Hidden Incentives</div><p class="win-body">No referral fees, no product shelf, no soft-dollar arrangements. Every recommendation is made solely in the client's interest.</p></div>
+  </div>
+</section>
+
+<!-- REVENUE - FIX 3 -->
+<section class="revenue" id="revenue">
+  <div>
+    <div class="section-label">Revenue Model</div>
+    <h2 class="section-title">Aligned. Transparent.<br>Tied to outcomes.</h2>
+    <div class="gold-rule"></div>
+    <p class="section-intro">Wilbury Capital operates on a simple, transparent fee structure — retainer-based to ensure alignment, with optional performance linkage for clients who prefer it.</p>
+  </div>
+  <div class="revenue-cards">
+    <div class="revenue-card featured">
+      <div class="featured-type">Annual Retainer</div>
+      <div class="featured-rule"></div>
+      <p class="revenue-card-sub">Based on portfolio complexity and scope of engagement</p>
+      <p class="revenue-card-detail">Fixed annual advisory fee covering all investment oversight, reporting, manager evaluation, and client communication. No AUM percentage — no conflict from growing the fee by growing assets.</p>
+    </div>
+    <div class="revenue-card">
+      <div class="revenue-card-opt">Optional Enhancement</div>
+      <div class="revenue-card-label">Performance-Linked Component</div>
+      <p class="revenue-card-sub" style="margin-bottom:12px">For clients who prefer outcome-based alignment</p>
+      <p class="revenue-card-detail">A percentage of returns above an agreed benchmark threshold, subject to a high-water mark. Ensures Wilbury Capital benefits only when clients benefit — with no participation in downside.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section class="closing" id="contact">
+  <div class="closing-quote">Investors are better served by controlling what they can — asset allocation, costs, and discipline — rather than trying to pick outperforming managers.</div>
+  <div class="closing-right">
+    <div class="closing-wordmark">WILBURY<br>CAPITAL</div>
+    <div class="closing-rule"></div>
+    <p class="closing-descriptor">Independent Investment Office<br>Serving the $25M – $250M wealth segment<br>Advisory-only · Conflict-free · Institutional grade</p>
+    <a href="mailto:enquiries@wilburycapital.com" class="closing-cta">Request a Conversation</a>
+  </div>
+</section>
+
+<!-- FIX 4: 2026 -->
+<footer>
+  <span>© 2026 Wilbury Capital. Independent Investment Office.</span>
+  <span>Confidential — for qualified investors only.</span>
+</footer>
+
+</body>
+</html>

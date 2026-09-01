@@ -1,0 +1,120 @@
+{
+  "tasks": [
+    {
+      "id": "task-8b440cf8-8dfc-455f-ad51-61e87093e7ca",
+      "title": "Authentication",
+      "items": [
+        {
+          "id": "item-de8e8f7c-fb8f-4d64-a51d-c34707c17045",
+          "title": "Registration",
+          "completed": false,
+          "linksTo": "task-85a2d4e1-bc0d-4d6d-a100-4c2330d5c68a"
+        },
+        {
+          "id": "item-84fcc1e7-221b-4171-bf93-58819680c200",
+          "title": "Login",
+          "completed": false
+        }
+      ],
+      "x": 40.00001574814394,
+      "y": 39.99999043510281
+    },
+    {
+      "id": "task-85a2d4e1-bc0d-4d6d-a100-4c2330d5c68a",
+      "title": "Registration",
+      "items": [
+        {
+          "id": "item-e4db84fd-9391-42ab-8efb-f36eb6946523",
+          "title": "Email -Verification",
+          "completed": false
+        }
+      ],
+      "x": 440.00003704965445,
+      "y": 348.29424937325473
+    },
+    {
+      "id": "task-0716a403-1d68-4b07-b6d4-b3d9d085fa89",
+      "title": "Campaign",
+      "items": [
+        {
+          "id": "item-77e70dcf-b5ca-4def-a96f-d61ae95fc335",
+          "title": "Add Category Model With Default name General",
+          "completed": true
+        },
+        {
+          "id": "item-5cb2f6f5-4054-4a6d-8c61-eab46ef67498",
+          "title": "Add an update campaign photo endpoint",
+          "completed": true
+        },
+        {
+          "id": "item-c5a3e7a3-1dff-450e-bba0-671c5d476ffd",
+          "title": "category get api",
+          "completed": false
+        },
+        {
+          "id": "item-bfd4d06c-0b36-4cf2-a0a7-ccf63c270d09",
+          "title": "add category into campaign model",
+          "completed": true
+        },
+        {
+          "id": "item-df0313c5-860b-4162-aa8a-c5008f640ae8",
+          "title": "add a field in campaign that indicate campaign for library ",
+          "completed": true
+        },
+        {
+          "id": "item-672091be-b7a2-45b1-9f2c-f8e857c9166c",
+          "title": "current user library usages limit",
+          "completed": false
+        },
+        {
+          "id": "item-08c8c314-4c6d-4386-9fef-51980d3bda24",
+          "title": "library campaign api",
+          "completed": false
+        },
+        {
+          "id": "item-3cd0de9f-20ad-4fa7-9005-e69830c6bd3f",
+          "title": "search filter on library api",
+          "completed": false
+        }
+      ],
+      "x": -271.92326763894806,
+      "y": 34.34011835193206
+    },
+    {
+      "id": "task-5405382e-ec21-4072-9554-598c1fcdb824",
+      "title": "Phainstonny ",
+      "items": [
+        {
+          "id": "item-49c7ba70-d2d2-4250-b3da-81dde19f9b21",
+          "title": "library unsave api (app)",
+          "completed": false
+        },
+        {
+          "id": "item-9985821c-89f1-420d-9aeb-861f76880271",
+          "title": "notes to flashcard add content source",
+          "completed": false
+        },
+        {
+          "id": "item-c2601ff8-48b1-4b9b-a5a6-c21a86cdaefa",
+          "title": "notes to quiz add content source",
+          "completed": false
+        },
+        {
+          "id": "item-675f382e-30ea-471f-89ef-037889e5639e",
+          "title": "core learning fix the url http / add https",
+          "completed": false
+        },
+        {
+          "id": "item-454ef013-4176-4719-a48a-465163909559",
+          "title": "steam toons and cheat sheet add progress",
+          "completed": false
+        }
+      ],
+      "x": -624.3393433598715,
+      "y": 49.43437898970285
+    }
+  ],
+  "settings": {
+    "alignment": "free"
+  }
+}

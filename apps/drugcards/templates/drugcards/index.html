@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STEM RN Pharmacology AI — Nursing Drug Cards</title>
+<style>
+  :root {
+    --bg: #f5f6fa;
+    --panel: #ffffff;
+    --border: #e5e7eb;
+    --text: #1f2430;
+    --muted: #6b7280;
+    --primary: #1e3a5f;
+    --primary-light: #eef2f7;
+    --accent-blue: #2563eb;
+    --danger: #dc2626;
+    --danger-bg: #fef2f2;
+    --danger-border: #fecaca;
+    --warn: #d97706;
+    --warn-bg: #fffbeb;
+    --warn-border: #fde68a;
+    --green: #059669;
+    --green-bg: #ecfdf5;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .app {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    min-height: 100vh;
+  }
+
+  /* ---------- LEFT SIDEBAR ---------- */
+  .sidebar {
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    padding: 20px;
+  }
+  .sidebar h2 {
+    font-size: 15px;
+    margin: 0 0 12px;
+  }
+  .sidebar label {
+    font-size: 12px;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .sidebar input[type="text"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+  .btn-primary {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 24px;
+  }
+  .btn-primary:hover { background: #16304d; }
+  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .quick-title {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .chip-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .chip {
+    background: var(--primary-light);
+    color: var(--primary);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    cursor: pointer;
+  }
+  .chip:hover { background: #dfe7f1; }
+  .chip.active { background: var(--primary); color: #fff; }
+
+  /* ---------- RIGHT PANEL ---------- */
+  .content {
+    padding: 24px 32px;
+    overflow-y: auto;
+  }
+  .placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+    color: var(--muted);
+    text-align: center;
+    font-size: 14px;
+  }
+  .card-wrap { max-width: 900px; margin: 0 auto; }
+
+  .header-card {
+    background: var(--primary);
+    color: #fff;
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .header-card h1 { margin: 0; font-size: 22px; }
+  .header-card .brands { opacity: 0.85; font-size: 13px; margin-top: 2px; }
+  .header-card .drug-class { opacity: 0.9; font-size: 13px; margin-top: 6px; }
+  .header-card .clear-btn {
+    position: absolute; top: 16px; right: 20px;
+    background: rgba(255,255,255,0.15); border: none; color: #fff;
+    border-radius: 6px; padding: 4px 10px; font-size: 12px; cursor: pointer;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 720px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .section {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+  }
+  .section h3 {
+    font-size: 14px;
+    margin: 0 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section ul { margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.6; }
+  .section p { font-size: 13.5px; line-height: 1.6; margin: 0; }
+
+  .section.wide { margin-bottom: 16px; }
+
+  table.side-effects {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+  table.side-effects th {
+    text-align: left;
+    color: var(--muted);
+    font-weight: 600;
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  table.side-effects td {
+    padding: 8px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  table.side-effects td.system { font-weight: 600; white-space: nowrap; }
+
+  .box {
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 16px;
+    border: 1px solid;
+  }
+  .box.danger { background: var(--danger-bg); border-color: var(--danger-border); }
+  .box.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .box.danger h3 { color: var(--danger); }
+  .box.warn h3 { color: var(--warn); }
+  .box ul { margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.7; }
+
+  .pearls-box {
+    background: #f5f3ff;
+    border: 1px solid #ddd6fe;
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 16px;
+  }
+  .pearls-box h3 { color: #6d28d9; font-size: 14px; margin: 0 0 12px; }
+  .pearl-chip {
+    display: inline-block;
+    background: #ede9fe;
+    color: #5b21b6;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    margin: 0 8px 8px 0;
+  }
+
+  .footer-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 720px) { .footer-2 { grid-template-columns: 1fr; } }
+  .footer-2 .section.memory h3 { color: var(--warn); }
+  .footer-2 .section.tips h3 { color: var(--accent-blue); }
+
+  .loading {
+    text-align: center;
+    padding: 60px 0;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .spinner {
+    width: 28px; height: 28px;
+    border: 3px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error-box {
+    background: var(--danger-bg);
+    border: 1px solid var(--danger-border);
+    color: var(--danger);
+    border-radius: var(--radius);
+    padding: 16px;
+    font-size: 13.5px;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ================= LEFT SIDEBAR ================= -->
+  <div class="sidebar">
+    <h2>Assignment Type</h2>
+    <label for="drugInput">Drug name — e.g. Metformin, Warfarin</label>
+    <input type="text" id="drugInput" placeholder="Type a drug name..." />
+    <button class="btn-primary" id="checkBtn">Check Assignment</button>
+
+    <div class="quick-title">Quick Picks</div>
+    <div class="chip-grid" id="chipGrid">
+      {% for drug in quick_picks %}
+        <button class="chip" data-drug="{{ drug }}">{{ drug }}</button>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- ================= RIGHT CONTENT ================= -->
+  <div class="content">
+    <div class="card-wrap" id="cardWrap">
+      <div class="placeholder">
+        Type a drug name or pick one on the left, then click<br>
+        "Check Assignment" to generate the nursing drug card.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const drugInput = document.getElementById('drugInput');
+const checkBtn = document.getElementById('checkBtn');
+const cardWrap = document.getElementById('cardWrap');
+const chipGrid = document.getElementById('chipGrid');
+
+chipGrid.addEventListener('click', (e) => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  drugInput.value = chip.dataset.drug;
+  generateCard(chip.dataset.drug);
+});
+
+checkBtn.addEventListener('click', () => {
+  const name = drugInput.value.trim();
+  if (!name) return;
+  generateCard(name);
+});
+
+drugInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') checkBtn.click();
+});
+
+function renderLoading() {
+  cardWrap.innerHTML = `
+    <div class="loading">
+      <div class="spinner"></div>
+      Generating nursing drug card...
+    </div>`;
+}
+
+function renderError(message) {
+  cardWrap.innerHTML = `<div class="error-box"><strong>Something went wrong:</strong> ${escapeHtml(message)}</div>`;
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str ?? '';
+  return div.innerHTML;
+}
+
+function listItems(arr) {
+  if (!arr || arr.length === 0) return '<p style="color:#9ca3af;">Not specified.</p>';
+  return `<ul>${arr.map(i => `<li>${escapeHtml(i)}</li>`).join('')}</ul>`;
+}
+
+function sideEffectsTable(rows) {
+  if (!rows || rows.length === 0) return '<p style="color:#9ca3af;">Not specified.</p>';
+  return `
+    <table class="side-effects">
+      <thead><tr><th>System</th><th>Effects</th></tr></thead>
+      <tbody>
+        ${rows.map(r => `<tr><td class="system">${escapeHtml(r.system)}</td><td>${escapeHtml(r.effects)}</td></tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+function pearlChips(arr) {
+  if (!arr || arr.length === 0) return '<p style="color:#9ca3af;">Not specified.</p>';
+  return arr.map(p => `<span class="pearl-chip">${escapeHtml(p)}</span>`).join('');
+}
+
+function renderCard(card) {
+  if (!card || typeof card !== 'object') {
+    renderError('Unable to render card: received invalid or missing card data.');
+    return;
+  }
+  const html = `
+    <div class="header-card">
+      <button class="clear-btn" id="clearBtn">✕ Clear</button>
+      <h1>${escapeHtml(card.drug_name || 'Unknown Drug')}</h1>
+      <div class="brands">${escapeHtml(card.brand_names || '')}</div>
+      <div class="drug-class">${escapeHtml(card.drug_class || '')}</div>
+    </div>
+
+    <div class="grid-2">
+      <div class="section">
+        <h3>⚙️ Mechanism of Action</h3>
+        <p>${escapeHtml(card.mechanism_of_action)}</p>
+      </div>
+      <div class="section">
+        <h3>🤰 Pregnancy Category</h3>
+        <p>${card.pregnancy_category ? escapeHtml(card.pregnancy_category) : '<span style="color:#9ca3af;">Not applicable</span>'}</p>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="section">
+        <h3>📋 Indications</h3>
+        ${listItems(card.indications)}
+      </div>
+      <div class="section">
+        <h3>🚫 Contraindications</h3>
+        ${listItems(card.contraindications)}
+      </div>
+    </div>
+
+    ${card.black_box_warning ? `
+    <div class="box danger">
+      <h3>⬛ Black Box Warning</h3>
+      <p>${escapeHtml(card.black_box_warning)}</p>
+    </div>` : ''}
+
+    <div class="section wide">
+      <h3>💊 Side Effects by System &nbsp;<span style="font-weight:400;color:#9ca3af;font-size:12px;">(Route: ${escapeHtml(card.route_of_administration || 'N/A')})</span></h3>
+      ${sideEffectsTable(card.side_effects)}
+    </div>
+
+    <div class="box danger">
+      <h3>⚠️ Serious Adverse Effects</h3>
+      ${listItems(card.serious_adverse_effects)}
+    </div>
+
+    <div class="grid-2">
+      <div class="section">
+        <h3>🩺 Assessment Before Administration</h3>
+        ${listItems(card.assessment_before_administration)}
+      </div>
+      <div class="section">
+        <h3>📈 Monitoring During Therapy</h3>
+        ${listItems(card.monitoring_during_therapy)}
+      </div>
+    </div>
+
+    <div class="box warn">
+      <h3>👩‍⚕️ Nursing Considerations</h3>
+      ${listItems(card.nursing_considerations)}
+    </div>
+
+    <div class="section wide">
+      <h3>📘 Patient Education</h3>
+      ${listItems(card.patient_education)}
+    </div>
+
+    <div class="pearls-box">
+      <h3>🎯 NCLEX Pearls</h3>
+      ${pearlChips(card.nclex_pearls)}
+    </div>
+
+    <div class="footer-2">
+      <div class="section memory">
+        <h3>💡 Memory Tricks</h3>
+        <p>${card.memory_trick ? escapeHtml(card.memory_trick) : '<span style="color:#9ca3af;">None provided.</span>'}</p>
+      </div>
+      <div class="section tips">
+        <h3>🩹 Clinical Tips</h3>
+        ${listItems(card.clinical_tips)}
+      </div>
+    </div>
+  `;
+  cardWrap.innerHTML = html;
+  document.getElementById('clearBtn').addEventListener('click', () => {
+    cardWrap.innerHTML = `<div class="placeholder">Type a drug name or pick one on the left, then click<br>"Check Assignment" to generate the nursing drug card.</div>`;
+    drugInput.value = '';
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  });
+}
+
+async function generateCard(drugName) {
+  renderLoading();
+  try {
+    const res = await fetch("{% url 'api_generate' %}", {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ drug_name: drugName })
+    });
+    
+    const contentType = res.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      renderError(`Server error (${res.status}): Server returned invalid response format.`);
+      return;
+    }
+
+    const data = await res.json();
+    if (!res.ok || data.error) {
+      renderError(data.error || `Server error (${res.status})`);
+      return;
+    }
+
+    let card = null;
+    if (data) {
+      if (data.data && data.data.card) {
+        card = data.data.card;
+      } else if (data.card) {
+        card = data.card;
+      } else if (data.data && data.data.drug_name) {
+        card = data.data;
+      } else if (data.drug_name) {
+        card = data;
+      }
+    }
+
+    if (!card || !card.drug_name) {
+      renderError(`Invalid drug card data received from server. Server returned: ${JSON.stringify(data)}`);
+      return;
+    }
+
+    renderCard(card);
+  } catch (err) {
+    renderError(err.message || String(err));
+  }
+}
+</script>
+</body>
+</html>
